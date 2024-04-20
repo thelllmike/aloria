@@ -62,6 +62,10 @@ flutter:
   assets:
     - assets/images/step1.png
     - assets/images/Logo.png
+    - assets/images/step2.png
+    - assets/images/step3.png
+    - assets/images/step4.png
+    - assets/images/step5.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
@@ -79,7 +83,6 @@ flutter:
     - family: BebasNeue
       fonts:
         - asset: assets/fonts/BebasNeue-Regular.ttf
-        - asset: assets/fonts/BebasNeue-Bold.ttf
           weight: 700
 
   # fonts:
