@@ -1,4 +1,5 @@
-import 'package:aloria/screens/instruction/step1.dart';
+import 'package:aloria/screens/google.dart';
+import 'package:aloria/screens/instruction/step.dart';
 import 'package:flutter/material.dart';
 
 
@@ -15,8 +16,9 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.green,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: SelfieScreen(), // Set the SelfieScreen as the home screen
-      // If you have more routes, define them here
+      home: GoogleScreen(), // Set the SelfieScreen as the home screen
+       debugShowCheckedModeBanner: false,
+      // If you have more routes, define them here GoogleScreen SelfieScreen
     );
   }
 }
