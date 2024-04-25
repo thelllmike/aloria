@@ -35,6 +35,7 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
+  unicons: ^2.1.1
 
 dev_dependencies:
   flutter_test:
@@ -47,6 +48,7 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
   flutter_svg: ^0.22.0
+  
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -68,6 +70,11 @@ flutter:
     - assets/images/step4.png
     - assets/images/step5.png
     - assets/images/googlegirl.png
+    - assets/images/dry_skin.png
+    - assets/images/oily_skin.png
+    - assets/images/combination_skin.png
+    - assets/images/normal_skin.png
+    - assets/images/pro.png
     - assets/icons/google_icon.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
