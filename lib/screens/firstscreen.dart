@@ -1,6 +1,8 @@
+import 'package:aloria/theme/app_colors.dart';
+import 'package:aloria/widgets/bottom_nav.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:unicons/unicons.dart';
+// Adjust the path according to your project structure
 
 class FirstScreen extends StatefulWidget {
   @override
@@ -9,68 +11,70 @@ class FirstScreen extends StatefulWidget {
 
 class _FirstScreenState extends State<FirstScreen> {
   int _selectedIndex = 0; // Active index for bottom navigation
-  
 
   @override
   Widget build(BuildContext context) {
-    const itemColor = Color(0xFF403D3D);
-    final textTheme = Theme.of(context).textTheme;
-
     return Scaffold(
       appBar: AppBar(
-        leading: Icon(Icons.menu, color: Colors.white),
-        title: Text('Hi, Anna', style: TextStyle(color: Colors.white)),
+        leading: const Icon(UniconsLine.paragraph, color: AppColors.appBarIconColor),
+        title: const Text('Hi, Anna', style: TextStyle(color: AppColors.appBarTitleColor)),
+        backgroundColor: AppColors.backgroundColor,
+        elevation: 0,
         actions: [
           IconButton(
-            icon: Icon(Icons.search, color: Colors.white),
+            icon: const Icon(UniconsLine.comments, color: AppColors.appBarIconColor),
             onPressed: () {
-              // Search action
+              // Actions to perform on pressing this button
             },
           ),
         ],
-        backgroundColor: Colors.transparent,
-        elevation: 0,
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-                      const Padding(
+            Container(
+              height: 2,
+              color: AppColors.itemColor,
+            ),
+            const Padding(
               padding: EdgeInsets.all(16.0),
-              child: Center( // Center widget added here
-               child: Text(
-    'RECENT TESTS',
-    textAlign: TextAlign.center, // Centers the text horizontally
-    style: TextStyle(
-      fontFamily: 'Bebas Neue',
-      fontSize: 28.0,
-      fontWeight: FontWeight.w700, // 700 is equivalent to 'bold'
-      height: 1.0, // Normal line spacing for 32px font size
-    ),)
+              child: Center(
+                child: Text(
+                  'RECENT TESTS',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: 'Bebas Neue',
+                    fontSize: 25.0,
+                    fontWeight: FontWeight.w700,
+                    height: 1.0,
+                  ),
+                ),
               ),
             ),
-        ListView.separated(
+         ListView.separated(
   shrinkWrap: true,
-  physics: NeverScrollableScrollPhysics(),
-  itemCount: 4, // Replace with your dynamic data size
+  physics: const NeverScrollableScrollPhysics(),
+  itemCount: 4,
   itemBuilder: (BuildContext context, int index) {
     return Container(
       decoration: BoxDecoration(
-        color: itemColor, // Your specified color for ListTile background.
-        borderRadius: BorderRadius.circular(45.0), // More rounded corner.
+        color: AppColors.itemColor,
+        borderRadius: BorderRadius.circular(45.0),
       ),
-      margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0), // Margin for spacing between items.
+      margin: EdgeInsets.symmetric(horizontal: 36.0, vertical: 4.0),
       child: ListTile(
-        leading: CircleAvatar(
-          radius: 36.0, // The radius is half the desired width, to get the width of 72px.
-          backgroundImage: AssetImage('assets/images/pro.png'), // Your profile image asset.
+        contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),  // Reduced horizontal padding
+        leading: const CircleAvatar(
+          radius: 44,
+          backgroundImage: AssetImage('assets/images/pro.png'),
         ),
-        title: Text(
+        title: const Text(
           'Oily skin',
           style: TextStyle(
             fontFamily: 'Nunito',
-            fontSize: 20.0,
-            fontWeight: FontWeight.w700, // Bold font weight as Nunito-Bold.
+            fontSize: 25.0,
+            fontWeight: FontWeight.w700,
             color: Colors.white,
           ),
         ),
@@ -78,116 +82,61 @@ class _FirstScreenState extends State<FirstScreen> {
           'Fair tone',
           style: TextStyle(
             fontFamily: 'Nunito',
-            fontSize: 20.0, // Assuming you want the subtitle the same size as title.
+            fontSize: 20.0,
             color: Colors.white.withOpacity(0.7),
           ),
         ),
-        trailing: Icon(UniconsLine.arrow_right, color: Colors.white),
-        contentPadding: EdgeInsets.symmetric(
-          vertical: 12.0,
-          horizontal: 16.0,
-        ),
+        trailing: Icon(UniconsLine.angle_right_b, color: Colors.white , size: 52.0,),
       ),
     );
   },
-  separatorBuilder: (BuildContext context, int index) {
-    return SizedBox(height: 10); // This adds space between the items.
-  },
+  separatorBuilder: (BuildContext context, int index) => SizedBox(height: 10),
 ),
 
             const Padding(
               padding: EdgeInsets.all(16.0),
               child: Center(
                 child: Text(
-                'SKIN TYPES',
-                 style: TextStyle(
-       fontFamily: 'Bebas Neue',
-       fontSize: 28.0,
-       fontWeight: FontWeight.w700, // 700 is equivalent to 'bold'
-       height: 1.0, // Normal line spacing for 32px font size
-     ),)
-               
-              )
-              )
-              ,
-            
-
-
-
+                  'SKIN TYPES',
+                  style: TextStyle(
+                    fontFamily: 'Bebas Neue',
+                    fontSize: 25.0,
+                    fontWeight: FontWeight.w700,
+                    height: 1.0,
+                  ),
+                ),
+              ),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildSkinTypeIcon(
-                    context, 'Dry skin', 'assets/images/dry_skin.png'),
-                _buildSkinTypeIcon(
-                    context, 'Oily skin', 'assets/images/oily_skin.png'),
-                _buildSkinTypeIcon(context, 'Comb. skin',
-                    'assets/images/combination_skin.png'),
-                _buildSkinTypeIcon(
-                    context, 'Normal skin', 'assets/images/normal_skin.png'),
+                _buildSkinTypeIcon(context, 'Dry skin', 'assets/images/dry_skin.png'),
+                _buildSkinTypeIcon(context, 'Oily skin', 'assets/images/oily_skin.png'),
+                _buildSkinTypeIcon(context, 'Comb. skin', 'assets/images/combination_skin.png'),
+                _buildSkinTypeIcon(context, 'Normal skin', 'assets/images/normal_skin.png'),
               ],
             ),
           ],
         ),
       ),
-      bottomNavigationBar: _customBottomNavigationBar(),
+      bottomNavigationBar: CustomBottomNavigationBar(
+        selectedIndex: _selectedIndex,
+        onItemSelected: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+      ),
     );
   }
 
-  Widget _buildSkinTypeIcon(
-      BuildContext context, String label, String iconPath) {
+  Widget _buildSkinTypeIcon(BuildContext context, String label, String iconPath) {
     return Column(
       children: [
-        Image.asset(iconPath, width: 40, height: 40),
+        Image.asset(iconPath, width: 52, height: 52),
         SizedBox(height: 8),
-        Text(label),
+        Text(label, style: const TextStyle(fontFamily: 'Nunito', fontSize: 15.0)),
       ],
     );
   }
-
- Widget _customBottomNavigationBar() {
-    return BottomAppBar(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: <Widget>[
-          _buildBottomNavItem(UniconsLine.home_alt, 'Home', 0),
-          _buildBottomNavItem(UniconsLine.store, 'Store', 1),
-          _buildBottomNavItem(UniconsLine.heart, 'Saved', 2),
-          _buildBottomNavItem(UniconsLine.shopping_basket, 'Cart', 3),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBottomNavItem(IconData icon, String label, int index) {
-    bool isSelected = _selectedIndex == index;
-    const itemColor = Color(0xFF403D3D);
-    return InkResponse(
-      onTap: () {
-        setState(() {
-          _selectedIndex = index;
-        });
-      },
-      child: AnimatedContainer(
-        duration: Duration(milliseconds: 250),
-        width: 40,
-        height: 40,
-        decoration: isSelected
-            ? BoxDecoration(
-                color: itemColor,
-                shape: BoxShape.circle,
-              )
-            : null,
-        child: Icon(
-          icon,
-          color: isSelected ? Colors.white : Colors.grey,
-        ),
-      ),
-    );
-  }
 }
-
-
-
-
-
