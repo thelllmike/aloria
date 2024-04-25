@@ -35,8 +35,8 @@ class _FirstScreenState extends State<FirstScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-                      Padding(
-              padding: const EdgeInsets.all(16.0),
+                      const Padding(
+              padding: EdgeInsets.all(16.0),
               child: Center( // Center widget added here
                child: Text(
     'RECENT TESTS',
@@ -49,32 +49,52 @@ class _FirstScreenState extends State<FirstScreen> {
     ),)
               ),
             ),
-            ListView.separated(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: 4,
-              itemBuilder: (BuildContext context, int index) {
-                return ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: AssetImage('assets/images/pro.png'),
-                  ),
-                  title: Text('Oily skin', style: TextStyle(color: Colors.white)),
-                  subtitle: Text('Fair tone', style: TextStyle(color: Colors.white)),
-                  trailing: Icon(UniconsLine.arrow_right, color: Colors.white),
-                  tileColor: itemColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                  contentPadding: EdgeInsets.symmetric(
-                    vertical: 10.0,
-                    horizontal: 16.0,
-                  ),
-                );
-              },
-              separatorBuilder: (BuildContext context, int index) {
-                return SizedBox(height: 16);
-              },
-            ),
+        ListView.separated(
+  shrinkWrap: true,
+  physics: NeverScrollableScrollPhysics(),
+  itemCount: 4, // Replace with your dynamic data size
+  itemBuilder: (BuildContext context, int index) {
+    return Container(
+      decoration: BoxDecoration(
+        color: itemColor, // Your specified color for ListTile background.
+        borderRadius: BorderRadius.circular(45.0), // More rounded corner.
+      ),
+      margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0), // Margin for spacing between items.
+      child: ListTile(
+        leading: CircleAvatar(
+          radius: 36.0, // The radius is half the desired width, to get the width of 72px.
+          backgroundImage: AssetImage('assets/images/pro.png'), // Your profile image asset.
+        ),
+        title: Text(
+          'Oily skin',
+          style: TextStyle(
+            fontFamily: 'Nunito',
+            fontSize: 20.0,
+            fontWeight: FontWeight.w700, // Bold font weight as Nunito-Bold.
+            color: Colors.white,
+          ),
+        ),
+        subtitle: Text(
+          'Fair tone',
+          style: TextStyle(
+            fontFamily: 'Nunito',
+            fontSize: 20.0, // Assuming you want the subtitle the same size as title.
+            color: Colors.white.withOpacity(0.7),
+          ),
+        ),
+        trailing: Icon(UniconsLine.arrow_right, color: Colors.white),
+        contentPadding: EdgeInsets.symmetric(
+          vertical: 12.0,
+          horizontal: 16.0,
+        ),
+      ),
+    );
+  },
+  separatorBuilder: (BuildContext context, int index) {
+    return SizedBox(height: 10); // This adds space between the items.
+  },
+),
+
             const Padding(
               padding: EdgeInsets.all(16.0),
               child: Center(
