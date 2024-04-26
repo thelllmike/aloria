@@ -130,96 +130,101 @@ Widget _buildResultIndicator(BuildContext context, String label, double percenta
 }
 
 
-
 Widget _buildProductCard(BuildContext context) {
   return Card(
-    margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(bottom: Radius.circular(8.0)),
+    margin: const EdgeInsets.symmetric(horizontal: 100.0, vertical: 10.0),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(12.0), bottom: Radius.circular(10)),
     ),
-    child: Padding(
-      padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 16.0), // padding top, right, bottom, left
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch, // stretches the button to the full width
-        children: [
-          Stack(
+    elevation: 5.0,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Stack(
+          children: [
+            ClipRRect(
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(12.0), bottom: Radius.circular(0)),
+              child: Image.asset(
+                'assets/images/product1.png',
+                width: double.infinity,
+                height: 120.0,
+                fit: BoxFit.cover,
+              ),
+            ),
+            Positioned(
+              top: 8.0,
+              right: 8.0,
+              child: Icon(
+                UniconsLine.heart,
+                color: const Color.fromARGB(255, 54, 53, 53),
+              ),
+            ),
+          ],
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,  // Ensures alignment starts from the same point
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8.0),
-                child: Image.asset(
-                  'assets/images/product1.png',
-                  fit: BoxFit.cover,
+              const Text(
+                'The ordinary',
+                style: TextStyle(
+                  fontFamily: 'Bebas Neue',
+                  fontSize: 12.0,
+                  color: Colors.black,
                 ),
               ),
-              Positioned(
-                top: 8.0, // Position to the top right with some padding
-                right: 8.0,
-                child: IconButton(
-                  icon: const Icon(UniconsLine.heart, color: Colors.grey),
-                  onPressed: () {
-                    // Favorite button action
-                  },
+              const SizedBox(height: 4),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Squalene Cleanser',
+                    style: TextStyle(
+                      fontFamily: 'Bebas Neue',
+                      fontSize: 14.0,
+                      color: Colors.black,
+                    ),
+                  ),
+                  Text(
+                    '\$20',
+                    style: TextStyle(
+                      fontFamily: 'Bebas Neue',
+                      fontSize: 16.0,
+                      color: AppColors.itemColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Center(
+                child: ElevatedButton.icon(
+                  onPressed: () {},
+                  icon: Icon(UniconsLine.shopping_basket),
+                  label: Text(
+                    'Add to cart',
+                    style: TextStyle(
+                      fontFamily: 'Bebas Neue',
+                      fontSize: 16.0,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.green,
+                    onPrimary: Colors.white,
+                    minimumSize: Size(80, 35),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 24), // gap between the image and the text
-          const Text(
-            'The ordinary',
-            style: TextStyle(
-              fontFamily: 'Bebas Neue',
-              fontSize: 18.0,
-              color: AppColors.appBarTitleColor,
-            ),
-          ),
-          const Text(
-            'Squalene Cleanser',
-            style: TextStyle(
-              fontFamily: 'Bebas Neue',
-              fontSize: 16.0,
-              color: AppColors.appBarTitleColor,
-            ),
-          ),
-          const SizedBox(height: 4), // gap between title and price
-          Text(
-            '\$20',
-            style: TextStyle(
-              fontFamily: 'Bebas Neue',
-              fontSize: 18.0,
-              color: Theme.of(context).primaryColor,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 8), // gap between price and button
-          ElevatedButton.icon(
-            onPressed: () {
-              // Add to cart action
-            },
-            icon: Icon(UniconsLine.shopping_basket),
-            label: const Text(
-              'Add to cart',
-              style: TextStyle(
-                fontFamily: 'Bebas Neue',
-              ),
-            ),
-            style: ElevatedButton.styleFrom(
-              primary: AppColors.accentGreen, // Use accentGreen for the button color
-              onPrimary: Colors.white, // Text color
-              padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 10.0),
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(8.0)),
-              ),
-              textStyle: const TextStyle(
-                fontFamily: 'Bebas Neue',
-                fontSize: 16.0,
-              ),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     ),
   );
 }
-
 
 }
