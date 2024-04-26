@@ -6,106 +6,89 @@ class TestResultsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
-      appBar: AppBar(
-        leading: InkWell(
-          onTap: () {
-            Navigator.of(context).pop();
-          },
-          child: Row(
-            mainAxisSize: MainAxisSize.min, // Use minimum space required by children
-            children: [
-              Icon(UniconsLine.angle_left, color: Colors.black), // Back icon
-              Text(
-                'Back', // Text next to icon
-                style: TextStyle(
-                  color: Colors.black,
-                  fontFamily: 'Bebas Neue',
-                  fontSize: 14
+      body: SafeArea(
+        child: CustomScrollView(
+          slivers: <Widget>[
+            SliverAppBar(
+              backgroundColor: Colors.white, // Set the background color to white
+              expandedHeight: 250.0,
+              pinned: true,
+              flexibleSpace: FlexibleSpaceBar(
+                background: Image.asset(
+                  'assets/images/test.png',
+                  fit: BoxFit.cover,
                 ),
               ),
-            ],
-          ),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        actions: [
-          IconButton(
-            icon: Icon(UniconsLine.heart, color: Colors.black),
-            onPressed: () {
-              // Favorite button action
-            },
-          ),
-        ],
-      ),
-      body: SafeArea(
-        
-        child: SingleChildScrollView(
-          
-          child: Column(
-            children: [
-              Stack(
-                children: [
-                  Image.asset(
-                    'assets/images/test.png', // Local image asset path
-                    width: double.infinity,
-                    height: 250.0,
-                    fit: BoxFit.cover,
-                  ),
-               
-                ],
+              leading: InkWell(
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(UniconsLine.angle_left, color: Colors.black),
+                    Text(
+                      'Back',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontFamily: 'Bebas Neue',
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+              actions: [
+                IconButton(
+                  icon: Icon(UniconsLine.heart, color: Colors.black),
+                  onPressed: () {
+                    // Favorite button action
+                  },
+                ),
+              ],
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 20.0),
+                child: Column(
+                  children: [
+                    Text(
+                      'TEST RESULTS',
+                      style: TextStyle(
+                        fontSize: 24.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 16.0),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Text(
-                          'TEST RESULTS',
-                          style: TextStyle(
-                            fontSize: 24.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(height: 16.0),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            _buildResultIndicator(context, 'Oily', 85),
-                            _buildResultIndicator(context, 'Comb.', 10),
-                            _buildResultIndicator(context, 'Normal', 3),
-                            _buildResultIndicator(context, 'Dry', 2),
-                          ],
-                        ),
+                        _buildResultIndicator(context, 'Oily', 85),
+                        _buildResultIndicator(context, 'Comb.', 10),
+                        _buildResultIndicator(context, 'Normal', 3),
+                        _buildResultIndicator(context, 'Dry', 2),
                       ],
                     ),
-                  ),
+                    const Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Text(
+                        'SUGGESTED PRODUCTS',
+                        style: TextStyle(
+                          fontSize: 24.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    ...List.generate(2, (index) => _buildProductCard(context)).toList(),
+                  ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  'SUGGESTED PRODUCTS',
-                  style: TextStyle(
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              ...List.generate(2, (index) => _buildProductCard(context)).toList(),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
-
 Widget _buildResultIndicator(BuildContext context, String label, double percentage) {
   return Column(
     children: [
@@ -118,7 +101,7 @@ Widget _buildResultIndicator(BuildContext context, String label, double percenta
             child: CircularProgressIndicator(
               value: percentage / 100,
               backgroundColor: Colors.grey[300],
-              valueColor: AlwaysStoppedAnimation<Color>(
+              valueColor: const AlwaysStoppedAnimation<Color>(
                 AppColors.appBarTitleColor, // Use appBarTitleColor for the progress indicator
               ),
               strokeWidth: 5,
@@ -126,7 +109,7 @@ Widget _buildResultIndicator(BuildContext context, String label, double percenta
           ),
           Text(
             '${percentage.toInt()}%',
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 18,
               color: AppColors.appBarTitleColor, // Use appBarTitleColor for the text
@@ -137,7 +120,7 @@ Widget _buildResultIndicator(BuildContext context, String label, double percenta
       SizedBox(height: 8),
       Text(
         label,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 16.0,
           color: AppColors.appBarTitleColor, // Use appBarTitleColor for the label
         ),
@@ -151,7 +134,7 @@ Widget _buildResultIndicator(BuildContext context, String label, double percenta
 Widget _buildProductCard(BuildContext context) {
   return Card(
     margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-    shape: RoundedRectangleBorder(
+    shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(bottom: Radius.circular(8.0)),
     ),
     child: Padding(
@@ -172,7 +155,7 @@ Widget _buildProductCard(BuildContext context) {
                 top: 8.0, // Position to the top right with some padding
                 right: 8.0,
                 child: IconButton(
-                  icon: Icon(UniconsLine.heart, color: Colors.grey),
+                  icon: const Icon(UniconsLine.heart, color: Colors.grey),
                   onPressed: () {
                     // Favorite button action
                   },
@@ -180,8 +163,8 @@ Widget _buildProductCard(BuildContext context) {
               ),
             ],
           ),
-          SizedBox(height: 24), // gap between the image and the text
-          Text(
+          const SizedBox(height: 24), // gap between the image and the text
+          const Text(
             'The ordinary',
             style: TextStyle(
               fontFamily: 'Bebas Neue',
@@ -189,7 +172,7 @@ Widget _buildProductCard(BuildContext context) {
               color: AppColors.appBarTitleColor,
             ),
           ),
-          Text(
+          const Text(
             'Squalene Cleanser',
             style: TextStyle(
               fontFamily: 'Bebas Neue',
@@ -197,7 +180,7 @@ Widget _buildProductCard(BuildContext context) {
               color: AppColors.appBarTitleColor,
             ),
           ),
-          SizedBox(height: 4), // gap between title and price
+          const SizedBox(height: 4), // gap between title and price
           Text(
             '\$20',
             style: TextStyle(
@@ -207,7 +190,7 @@ Widget _buildProductCard(BuildContext context) {
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 8), // gap between price and button
+          const SizedBox(height: 8), // gap between price and button
           ElevatedButton.icon(
             onPressed: () {
               // Add to cart action
@@ -223,7 +206,7 @@ Widget _buildProductCard(BuildContext context) {
               primary: AppColors.accentGreen, // Use accentGreen for the button color
               onPrimary: Colors.white, // Text color
               padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 10.0),
-              shape: RoundedRectangleBorder(
+              shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(8.0)),
               ),
               textStyle: const TextStyle(
