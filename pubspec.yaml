@@ -75,6 +75,8 @@ flutter:
     - assets/images/combination_skin.png
     - assets/images/normal_skin.png
     - assets/images/pro.png
+    - assets/images/test.png
+    - assets/images/product1.png
     - assets/icons/google_icon.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
