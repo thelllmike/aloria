@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:unicons/unicons.dart';
 import 'package:aloria/theme/app_colors.dart'; // Ensure this file has the required color definitions.
 
-class TestResultsScreen extends StatelessWidget {
+class ShopScreen extends StatelessWidget {
   // Dummy product data - replace with your actual product data
   final List<Map<String, String>> productList = [
     {
@@ -64,53 +64,69 @@ Widget build(BuildContext context) {
 }
 
 SliverAppBar _buildSliverAppBar(BuildContext context) {
-    return SliverAppBar(
-        backgroundColor: Colors.white,  // Confirming white background
-        expandedHeight: 450.0,
-        pinned: true,  // Keeps the AppBar visible
-        flexibleSpace: const FlexibleSpaceBar(
-            background: DecoratedBox(
+  return SliverAppBar(
+    backgroundColor: Colors.white,  // White background color
+    pinned: true,  // AppBar stays visible at the top when scrolling
+    leading: IconButton(
+      icon: Icon(UniconsLine.paragraph, color: Colors.black),
+      onPressed: () {
+        Navigator.of(context).pop();  // Navigates back on tap
+      },
+    ),
+    title: Text(
+      'Hi, Anna',
+      style: TextStyle(
+        fontFamily: 'Nunito',
+        color: Colors.black,
+        fontSize: 14.0,
+      ),
+    ),
+    actions: [
+      IconButton(
+        icon: const Icon(UniconsLine.comments, color: Colors.black),
+        onPressed: () {
+          // Search button action
+        },
+      ),
+    ],
+bottom: PreferredSize(
+  preferredSize: Size.fromHeight(48.0),  // Height for the search area
+  child: Padding(
+    padding: EdgeInsets.symmetric(horizontal: 16.0),  // Horizontal padding for the AppBar's bottom area
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,  // Space between the leading and trailing icons
+      children: [
+        Icon(UniconsLine.filter, size: 20.0, color: Colors.grey),  // Filter icon on the left
+        Row(  // Search area on the right
+          mainAxisSize: MainAxisSize.min,  // Takes the size of its children
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),  // Padding inside the container for 'Oily skin' text
               decoration: BoxDecoration(
-                color: Colors.white,  // Ensuring white underlay for transparency in image
-                image: DecorationImage(
-                  image: AssetImage('assets/images/test.png'),
-                  fit: BoxFit.cover,
+                color: Colors.grey[200],  // Soft grey color for 'Oily skin' text background
+                borderRadius: BorderRadius.circular(24.0),  // Rounded corners for the container
+              ),
+              child: Text(
+                'Oily skin',
+                style: TextStyle(
+                  fontFamily: 'Nunito',
+                  color: Colors.black45,
+                  fontSize: 14.0,
                 ),
               ),
             ),
+            SizedBox(width: 8.0),  // Space between 'Oily skin' text and search icon
+            Icon(UniconsLine.search, size: 20.0, color: Colors.grey),  // Search icon
+          ],
         ),
-        leading: InkWell(
-            onTap: () {
-                Navigator.of(context).pop();  // Navigates back on tap
-            },
-            child: const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                        Icon(UniconsLine.angle_left, color: Colors.black),
-                        SizedBox(width: 4.0),
-                        Text(
-                            'Back',
-                            style: TextStyle(
-                                fontFamily: 'Nunito',
-                                color: Colors.black,
-                                fontSize: 14.0,
-                            ),
-                        ),
-                    ],
-                ),
-            ),
-        ),
-        actions: [
-            IconButton(
-                icon: const Icon(UniconsLine.heart, color: Colors.black),
-                onPressed: () {
-                    // Favorite button action
-                },
-            ),
-        ],
-    );
+      ],
+    ),
+  ),
+),
+
+
+
+  );
 }
 
 
@@ -120,36 +136,9 @@ Widget _buildContent(BuildContext context) {
   
     child: Column(
       children: [
-        const Text(
-          
-          'TEST RESULTS',
-          style: TextStyle(
-            fontFamily: 'Bebas Neue',
-            fontSize: 22.0,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        SizedBox(height: 16.0),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            _buildResultIndicator(context, 'Oily', 85),
-            _buildResultIndicator(context, 'Comb.', 10),
-            _buildResultIndicator(context, 'Normal', 3),
-            _buildResultIndicator(context, 'Dry', 2),
-          ],
-        ),
-        const Padding(
-          padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
-          child: Text(
-            'SUGGESTED PRODUCTS',
-            style: TextStyle(
-              fontFamily: 'Bebas Neue',
-              fontSize: 22.0,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
+      
+      
+      
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -172,43 +161,9 @@ Widget _buildContent(BuildContext context) {
           },
         ),
          const SizedBox(height: 20), // Space before the button
-        Container(
-  width: 320.0, // Set your desired button width here
-  child: ElevatedButton(
-    onPressed: () {
-      // Handle button press
-    },
-    style: ElevatedButton.styleFrom(
-      primary: AppColors.accentGreen, // Use the accentGreen color defined in AppColors
-      onPrimary: AppColors.appBarIconColor, // Use the appBarIconColor for the text color
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0), // Rounded corners
-      ),
-      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0), // Padding inside the button
-    ),
-    child: Row(
-      mainAxisSize: MainAxisSize.min, // To make the row only as wide as its children
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          'Contact a dermatologist ',
-          style: TextStyle(
-            fontFamily: 'Nunito', // Set the font family to Nunito
-            fontSize: 16.0,
-            fontWeight: FontWeight.bold,
-            color: AppColors.itemColor, // Use the itemColor for the text color
-          ),
-        ),
-        Icon(
-          UniconsLine.comments, // The chat icon (or any other preferred icon)
-          color: AppColors.itemColor, // Use the itemColor for the icon color
-        ),
-      ],
-    ),
-  ),
-),
+       
 
-        const SizedBox(height: 20), // Space after the button
+   
       
     
   
@@ -217,43 +172,7 @@ Widget _buildContent(BuildContext context) {
   );
 }
 
-  Widget _buildResultIndicator(BuildContext context, String label, int percentage) {
-    return Column(
-      children: [
-        Stack(
-          alignment: Alignment.center,
-          children: [
-            SizedBox(
-              width: 60,
-              height: 60,
-              child: CircularProgressIndicator(
-                value: percentage / 100.0,
-                backgroundColor: Colors.grey[300],
-                valueColor: AlwaysStoppedAnimation<Color>(AppColors.itemColor),
-                strokeWidth: 5,
-              ),
-            ),
-            Text(
-              '$percentage%',
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-                color: AppColors.itemColor,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 16.0,
-            color: AppColors.appBarIconColor,
-          ),
-        ),
-      ],
-    );
-  }
+ 
 
 Widget _buildProductCard(
     BuildContext context, String assetPath, String productName, String productPrice) {
@@ -311,7 +230,7 @@ Widget _buildProductCard(
             children: [
               Text(
                 productName,
-                style: TextStyle(
+                style: const TextStyle(
                   fontFamily: 'Bebas Neue',
                   fontSize: 10.0,
                   color: Colors.black,

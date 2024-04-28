@@ -1,6 +1,7 @@
 import 'package:aloria/screens/firstscreen.dart';
 import 'package:aloria/screens/google.dart';
 import 'package:aloria/screens/instruction/step.dart';
+import 'package:aloria/screens/shop.dart';
 import 'package:aloria/screens/testresult.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.green,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: TestResultsScreen(), // Set the SelfieScreen as the home screen
+      home: ShopScreen(), // Set the SelfieScreen as the home screen
        debugShowCheckedModeBanner: false,
       // If you have more routes, define them here GoogleScreen SelfieScreen
     );
