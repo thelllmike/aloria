@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:unicons/unicons.dart';
 import 'package:aloria/theme/app_colors.dart'; // Ensure this file has the required color definitions.
+import 'package:aloria/widgets/bottom_nav.dart';
 
-class TestResultsScreen extends StatelessWidget {
-  // Dummy product data - replace with your actual product data
+class SavedScreen extends StatefulWidget {
+  @override
+  _SavedScreenState createState() => _SavedScreenState();
+}
+
+class _SavedScreenState extends State<SavedScreen> {
   final List<Map<String, String>> productList = [
     {
       'imageAssetPath': 'assets/images/product1.png',
@@ -38,7 +43,7 @@ class TestResultsScreen extends StatelessWidget {
      
     // Add more products as per your data
   ];
-
+  int _selectedIndex = 0; // Default index if nothing is selected
 @override
 Widget build(BuildContext context) {
   return Scaffold(
@@ -60,57 +65,47 @@ Widget build(BuildContext context) {
         ],
       ),
     ),
+       bottomNavigationBar: CustomBottomNavigationBar(
+        selectedIndex: _selectedIndex,
+        onItemSelected: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+      ),
   );
 }
 
 SliverAppBar _buildSliverAppBar(BuildContext context) {
-    return SliverAppBar(
-        backgroundColor: Colors.white,  // Confirming white background
-        expandedHeight: 450.0,
-        pinned: true,  // Keeps the AppBar visible
-        flexibleSpace: const FlexibleSpaceBar(
-            background: DecoratedBox(
-              decoration: BoxDecoration(
-                color: Colors.white,  // Ensuring white underlay for transparency in image
-                image: DecorationImage(
-                  image: AssetImage('assets/images/test.png'),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-        ),
-        leading: InkWell(
-            onTap: () {
-                Navigator.of(context).pop();  // Navigates back on tap
-            },
-            child: const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                        Icon(UniconsLine.angle_left, color: Colors.black),
-                        SizedBox(width: 4.0),
-                        Text(
-                            'Back',
-                            style: TextStyle(
-                                fontFamily: 'Nunito',
-                                color: Colors.black,
-                                fontSize: 14.0,
-                            ),
-                        ),
-                    ],
-                ),
-            ),
-        ),
-        actions: [
-            IconButton(
-                icon: const Icon(UniconsLine.heart, color: Colors.black),
-                onPressed: () {
-                    // Favorite button action
-                },
-            ),
-        ],
-    );
+  return SliverAppBar(
+    backgroundColor: Colors.white,  // White background color
+    pinned: true,  // AppBar stays visible at the top when scrolling
+    leading: IconButton(
+      icon: const Icon(UniconsLine.paragraph, color: Colors.black),
+      onPressed: () {
+        Navigator.of(context).pop();  // Navigates back on tap
+      },
+    ),
+    title: const Text(
+      'Hi, Anna',
+      style: TextStyle(
+        fontFamily: 'Nunito',
+        color: Colors.black,
+        fontSize: 14.0,
+      ),
+    ),
+    actions: [
+      IconButton(
+        icon: const Icon(UniconsLine.comments, color: Colors.black),
+        onPressed: () {
+          // Search button action
+        },
+      ),
+    ],
+
+
+
+  );
 }
 
 
@@ -119,10 +114,12 @@ Widget _buildContent(BuildContext context) {
   return Container(
   
     child: Column(
+   
+     
       children: [
         const Text(
           
-          'TEST RESULTS',
+          'SAVED SCAN',
           style: TextStyle(
             fontFamily: 'Bebas Neue',
             fontSize: 22.0,
@@ -130,19 +127,51 @@ Widget _buildContent(BuildContext context) {
           ),
         ),
         SizedBox(height: 16.0),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            _buildResultIndicator(context, 'Oily', 85),
-            _buildResultIndicator(context, 'Comb.', 10),
-            _buildResultIndicator(context, 'Normal', 3),
-            _buildResultIndicator(context, 'Dry', 2),
-          ],
+          ListView.separated(
+  shrinkWrap: true,
+  physics: const NeverScrollableScrollPhysics(),
+  itemCount: 2,
+  itemBuilder: (BuildContext context, int index) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.itemColor,
+        borderRadius: BorderRadius.circular(45.0),
+      ),
+      margin: EdgeInsets.symmetric(horizontal: 36.0, vertical: 4.0),
+      child: ListTile(
+        contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),  // Reduced horizontal padding
+        leading: const CircleAvatar(
+          radius: 44,
+          backgroundImage: AssetImage('assets/images/pro.png'),
         ),
+        title: const Text(
+          'Oily skin',
+          style: TextStyle(
+            fontFamily: 'Nunito',
+            fontSize: 25.0,
+            fontWeight: FontWeight.w700,
+            color: Colors.white,
+          ),
+        ),
+        subtitle: Text(
+          'Fair tone',
+          style: TextStyle(
+            fontFamily: 'Nunito',
+            fontSize: 20.0,
+            color: Colors.white.withOpacity(0.7),
+          ),
+        ),
+        trailing: Icon(UniconsLine.angle_right_b, color: Colors.white , size: 52.0,),
+      ),
+    );
+  },
+  separatorBuilder: (BuildContext context, int index) => SizedBox(height: 10),
+),
+
         const Padding(
           padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
           child: Text(
-            'SUGGESTED PRODUCTS',
+            'SAVED PRODUCTS',
             style: TextStyle(
               fontFamily: 'Bebas Neue',
               fontSize: 22.0,
@@ -150,6 +179,9 @@ Widget _buildContent(BuildContext context) {
             ),
           ),
         ),
+      
+   
+      
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -172,43 +204,9 @@ Widget _buildContent(BuildContext context) {
           },
         ),
          const SizedBox(height: 20), // Space before the button
-        Container(
-  width: 320.0, // Set your desired button width here
-  child: ElevatedButton(
-    onPressed: () {
-      // Handle button press
-    },
-    style: ElevatedButton.styleFrom(
-      primary: AppColors.accentGreen, // Use the accentGreen color defined in AppColors
-      onPrimary: AppColors.appBarIconColor, // Use the appBarIconColor for the text color
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0), // Rounded corners
-      ),
-      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0), // Padding inside the button
-    ),
-    child: const Row(
-      mainAxisSize: MainAxisSize.min, // To make the row only as wide as its children
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          'Contact a dermatologist ',
-          style: TextStyle(
-            fontFamily: 'Nunito', // Set the font family to Nunito
-            fontSize: 16.0,
-            fontWeight: FontWeight.bold,
-            color: AppColors.itemColor, // Use the itemColor for the text color
-          ),
-        ),
-        Icon(
-          UniconsLine.comments, // The chat icon (or any other preferred icon)
-          color: AppColors.itemColor, // Use the itemColor for the icon color
-        ),
-      ],
-    ),
-  ),
-),
+       
 
-        const SizedBox(height: 20), // Space after the button
+   
       
     
   
@@ -217,48 +215,12 @@ Widget _buildContent(BuildContext context) {
   );
 }
 
-  Widget _buildResultIndicator(BuildContext context, String label, int percentage) {
-    return Column(
-      children: [
-        Stack(
-          alignment: Alignment.center,
-          children: [
-            SizedBox(
-              width: 60,
-              height: 60,
-              child: CircularProgressIndicator(
-                value: percentage / 100.0,
-                backgroundColor: Colors.grey[300],
-                valueColor: AlwaysStoppedAnimation<Color>(AppColors.itemColor),
-                strokeWidth: 5,
-              ),
-            ),
-            Text(
-              '$percentage%',
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-                color: AppColors.itemColor,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 16.0,
-            color: AppColors.appBarIconColor,
-          ),
-        ),
-      ],
-    );
-  }
+ 
 
 Widget _buildProductCard(
     BuildContext context, String assetPath, String productName, String productPrice) {
   return Card(
-    margin: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),  // Increased bottom margin
+    margin: const EdgeInsets.fromLTRB(10.0, 10.0, 14.0, 0.0),  // Increased bottom margin
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(12.0),
     ),
@@ -311,7 +273,7 @@ Widget _buildProductCard(
             children: [
               Text(
                 productName,
-                style: TextStyle(
+                style: const TextStyle(
                   fontFamily: 'Bebas Neue',
                   fontSize: 10.0,
                   color: Colors.black,
@@ -375,6 +337,7 @@ Widget _buildProductCard(
     ),
   );
 }
+
 
 
 }
