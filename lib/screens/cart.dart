@@ -23,6 +23,12 @@ class _CartScreenState extends State<CartScreen> {
       'quantity': 2,
       'price': 30.0,
     },
+    {
+      'imageAssetPath': 'assets/images/cart.png',
+      'name': 'Gommage Scrub',
+      'quantity': 2,
+      'price': 30.0,
+    },
   ];
 
   int _selectedIndex = 0; // Default index if nothing is selected
@@ -57,200 +63,266 @@ class _CartScreenState extends State<CartScreen> {
       ],
     );
   }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          Expanded(
-            child: CustomScrollView(
-              slivers: <Widget>[
-                SliverAppBar(
-                  backgroundColor: Colors.white,
-                  pinned: true,
-                  leading: IconButton(
-                    icon: const Icon(UniconsLine.paragraph, color: Colors.black),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                  title: const Text(
-                    'Hi, Anna',
-                    style: TextStyle(
-                      fontFamily: 'Nunito',
-                      color: Colors.black,
-                      fontSize: 20.0,
-                    ),
-                  ),
-                  actions: [
-                    IconButton(
-                      icon: const Icon(UniconsLine.comments, color: Colors.black),
-                      onPressed: () {},
-                    ),
-                  ],
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    body: Column(
+      children: [
+        Expanded(
+          child: CustomScrollView(
+            slivers: <Widget>[
+              SliverAppBar(
+                backgroundColor: Colors.white,
+                pinned: true,
+                leading: IconButton(
+                  icon: const Icon(UniconsLine.paragraph, color: Colors.black),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
                 ),
-                SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      final product = cartProducts[index];
-                      return Card(
-                        elevation: 2,
-                        margin: EdgeInsets.all(8.0),
+                title: const Text(
+                  'Hi, Anna',
+                  style: TextStyle(
+                    fontFamily: 'Nunito',
+                    color: Colors.black,
+                    fontSize: 20.0,
+                  ),
+                ),
+                actions: [
+                  IconButton(
+                    icon: const Icon(UniconsLine.comments, color: Colors.black),
+                    onPressed: () {},
+                  ),
+                ],
+              ),
+              SliverToBoxAdapter(
+                child: Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.all(16.0),
+                  child: const Text(
+                    'CART',
+                    style: TextStyle(
+                      fontFamily: 'Bebas Neue',
+                      fontSize: 22.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    final product = cartProducts[index];
+                    return Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+                      child: Row(
+                        children: [
+                          Checkbox(
+                            value: true,
+                            onChanged: (bool? value) {},
+                            activeColor: const Color(0xFF77BF43),
+                          ),
+                          Expanded(
+                            child: Card(
+                              elevation: 2,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: IntrinsicHeight(
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  children: [
+                                    Expanded(
+                                      flex: 2,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: const BorderRadius.horizontal(left: Radius.circular(10)),
+                                          image: DecorationImage(
+                                            image: AssetImage(product['imageAssetPath']),
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 5,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Text(
+                                                  product['name'],
+                                                  style: const TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                IconButton(
+                                                  icon: const Icon(UniconsLine.times),
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      cartProducts.removeAt(index);
+                                                    });
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                            Text(
+                                              "\$${product['price']}",
+                                              style: const TextStyle(
+                                                color: Colors.green,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.end,
+                                              children: [
+                                                Container(
+                                                  width: 24,
+                                                  height: 24,
+                                                  decoration: const BoxDecoration(
+                                                    color: Color(0xFF77BF43),
+                                                    shape: BoxShape.circle,
+                                                  ),
+                                                  alignment: Alignment.center,
+                                                  child: IconButton(
+                                                    padding: EdgeInsets.zero,
+                                                    icon: const Icon(UniconsLine.minus, color: Color(0xFF403D3D)),
+                                                    onPressed: () {
+                                                      setState(() {
+                                                        if (product['quantity'] > 1) {
+                                                          product['quantity']--;
+                                                        }
+                                                      });
+                                                    },
+                                                    iconSize: 16,
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                                                  child: Text(
+                                                    '${product['quantity']}',
+                                                    style: const TextStyle(fontSize: 16),
+                                                  ),
+                                                ),
+                                                Container(
+                                                  width: 24,
+                                                  height: 24,
+                                                  decoration: const BoxDecoration(
+                                                    color: Color(0xFF77BF43),
+                                                    shape: BoxShape.circle,
+                                                  ),
+                                                  alignment: Alignment.center,
+                                                  child: IconButton(
+                                                    padding: EdgeInsets.zero,
+                                                    icon: const Icon(UniconsLine.plus, color: Color(0xFF403D3D)),
+                                                    onPressed: () {
+                                                      setState(() {
+                                                        product['quantity']++;
+                                                      });
+                                                    },
+                                                    iconSize: 16,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  childCount: cartProducts.length,
+                ),
+              ),
+            ],
+          ),
+        ),
+        // Moved up for alignment with the promo code section
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Column(
+            children: [
+              Container(
+                height: 48,
+                margin: const EdgeInsets.only(top: 20), // Gives space between cart items and promo code
+                decoration: BoxDecoration(
+                  color: const Color(0xFF403D3D26), // Dark grey text box color
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        decoration: InputDecoration(
+                          hintText: 'Promo Code',
+                          hintStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
+                          border: InputBorder.none,
+                        ),
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        // Logic to apply promo code
+                      },
+                      style: ElevatedButton.styleFrom(
+                        primary: const Color(0xFF77BF43), // Green button
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: Stack(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.symmetric(vertical: 30, horizontal: 35),
-                              child: Row(
-                                children: [
-                                  Checkbox(
-                                    value: true,
-                                    onChanged: (bool? value) {},
-                                    activeColor: Color(0xFF77BF43),
-                                  ),
-                                  SizedBox(width: 10),
-                                  Image.asset(
-                                    product['imageAssetPath'],
-                                    width: 60,
-                                    height: 60,
-                                  ),
-                                  SizedBox(width: 10),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          product['name'],
-                                          style: TextStyle(
-                                            fontFamily: 'Nunito',
-                                            fontSize: 12.0,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        Text(
-                                          "\$${product['price']}",
-                                          style: TextStyle(
-                                            fontFamily: 'Nunito',
-                                            color: Color(0xFF77BF43),
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 12.0,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Positioned(
-                              top: 8,
-                              right: 8,
-                              child: IconButton(
-                                icon: Icon(UniconsLine.times, color: Color(0xFF403D3D)),
-                                onPressed: () {
-                                  setState(() {
-                                    cartProducts.removeAt(index);
-                                  });
-                                },
-                              ),
-                            ),
-                           Positioned(
-  bottom: 8,  // Adjust this value to position the row lower or higher
-  right: 10,  // Adjust this value to align the row to the right as needed
-  child: Row(
-    children: [
-      Container(
-        width: 28,  // Specify width for a smaller circle
-        height: 28,  // Specify height for a smaller circle
-        decoration: BoxDecoration(
-          color: Color(0xFF77BF43),  // Green color background
-          shape: BoxShape.circle,
-        ),
-        child: IconButton(
-          icon: Icon(UniconsLine.minus, color: Colors.white),
-          onPressed: () {
-            setState(() {
-              if (product['quantity'] > 1) {
-                product['quantity']--;
-              }
-            });
-          },
-          iconSize: 16,  // Smaller icon size
-          padding: EdgeInsets.all(0),  // Minimal padding to reduce overall size
-        ),
-      ),
-      Padding(
-        padding: EdgeInsets.symmetric(horizontal: 8),
-        child: Text(
-          '${product['quantity']}',
-          style: TextStyle(
-            fontFamily: 'Nunito',
-            fontSize: 16.0,
-            color: Colors.black,
-          ),
-        ),
-      ),
-      Container(
-        width: 28,  // Specify width for a smaller circle
-        height: 28,  // Specify height for a smaller circle
-        decoration: BoxDecoration(
-          color: Color(0xFF77BF43),  // Green color background
-          shape: BoxShape.circle,
-        ),
-        child: IconButton(
-          icon: Icon(UniconsLine.plus, color: Colors.white),
-          onPressed: () {
-            setState(() {
-              product['quantity']++;
-            });
-          },
-          iconSize: 16,  // Smaller icon size
-          padding: EdgeInsets.all(0),  // Minimal padding to reduce overall size
-        ),
-      ),
-    ],
-  ),
-)
-
-                          ],
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        minimumSize: Size(0, 30), // Remove minimum constraints
+                      ),
+                      child: const Text(
+                        'Apply',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
                         ),
-                      );
-                    },
-                    childCount: cartProducts.length,
-                  ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              const Divider(),
+              _buildPriceRow('Total', total),
+              const Divider(),
+              _buildPriceRow('Shipping', shippingFee),
+              const Divider(),
+              _buildPriceRow('Sub Total', total + shippingFee),
+              const SizedBox(height: 20),
+              _buildCheckoutButton(),
+              const SizedBox(height: 20),
+            ],
           ),
-          Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                Divider(),
-                _buildPriceRow('Total', total),
-                _buildPriceRow('Shipping', shippingFee),
-                Divider(),
-                _buildPriceRow('Sub Total', total + shippingFee),
-                SizedBox(height: 20),
-                _buildCheckoutButton(),
-              ],
-            ),
-          ),
-        ],
-      ),
-      bottomNavigationBar: CustomBottomNavigationBar(
-        selectedIndex: _selectedIndex,
-        onItemSelected: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+    bottomNavigationBar: CustomBottomNavigationBar(
+      selectedIndex: _selectedIndex,
+      onItemSelected: (index) {
+        setState(() {
+          _selectedIndex = index;
+        });
+      },
+    ),
+  );
+}
 
 
 
@@ -260,7 +332,7 @@ class _CartScreenState extends State<CartScreen> {
       children: [
         Text(
           '$label',
-          style: TextStyle(
+          style: const TextStyle(
             fontFamily: 'Nunito',
             fontWeight: FontWeight.bold,
             fontSize: 16.0,
@@ -268,7 +340,7 @@ class _CartScreenState extends State<CartScreen> {
         ),
         Text(
           '\$${amount.toStringAsFixed(2)}',
-          style: TextStyle(
+          style: const TextStyle(
             fontFamily: 'Nunito',
             fontWeight: FontWeight.bold,
             fontSize: 16.0,
@@ -288,7 +360,7 @@ class _CartScreenState extends State<CartScreen> {
         onPressed: () {
           // Proceed to checkout
         },
-        child: Padding(
+        child: const Padding(
           padding: EdgeInsets.all(12.0),
           child: Text(
             'Proceed to Checkout',
