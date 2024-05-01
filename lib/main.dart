@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.green,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home:  CartScreen(), // Set the SelfieScreen as the home screen
+      home:  const CartScreen(), // Set the SelfieScreen as the home screen
        debugShowCheckedModeBanner: false,
       // If you have more routes, define them here GoogleScreen SelfieScreen
     );
