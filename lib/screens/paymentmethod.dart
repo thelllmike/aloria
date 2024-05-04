@@ -18,7 +18,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: const Padding(
-          padding: EdgeInsets.only(left: -1), // Adjust padding as needed
+          padding: EdgeInsets.only(left: 0), // Adjust padding as needed
           child: Text('Back', style: TextStyle(color: Colors.black)),
         ),
         backgroundColor: Colors.white,

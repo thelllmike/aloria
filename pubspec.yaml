@@ -78,6 +78,7 @@ flutter:
     - assets/images/test.png
     - assets/images/cart.png
     - assets/images/product1.png
+    - assets/images/productscreen.png
     - assets/icons/google_icon.svg
     - assets/icons/shutter.svg
     - assets/icons/circle_emp.svg
