@@ -355,7 +355,7 @@ Widget build(BuildContext context) {
       width: double.infinity,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          primary: Color(0xFF77BF43), // Button color
+          primary: const Color(0xFF77BF43), // Button color
         ),
         onPressed: () {
           // Proceed to checkout

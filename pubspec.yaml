@@ -80,6 +80,11 @@ flutter:
     - assets/images/product1.png
     - assets/icons/google_icon.svg
     - assets/icons/shutter.svg
+    - assets/icons/circle_emp.svg
+    - assets/icons/visa.svg
+    - assets/icons/marster.svg
+    - assets/icons/circle_fill.svg
+    - assets/icons/paypal.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

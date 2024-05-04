@@ -1,7 +1,9 @@
+import 'package:aloria/screens/address.dart';
 import 'package:aloria/screens/cart.dart';
 import 'package:aloria/screens/firstscreen.dart';
 import 'package:aloria/screens/google.dart';
 import 'package:aloria/screens/instruction/step.dart';
+import 'package:aloria/screens/paymentmethod.dart';
 import 'package:aloria/screens/savedscan.dart';
 import 'package:aloria/screens/shop.dart';
 import 'package:aloria/screens/testresult.dart';
@@ -21,7 +23,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.green,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home:  const CartScreen(), // Set the SelfieScreen as the home screen
+      home:  PaymentMethodScreen(), // Set the SelfieScreen as the home screen
        debugShowCheckedModeBanner: false,
       // If you have more routes, define them here GoogleScreen SelfieScreen
     );
