@@ -1,7 +1,9 @@
+import 'package:aloria/widgets/menu.dart';
 import 'package:flutter/material.dart';
 import 'package:unicons/unicons.dart';
 import 'package:aloria/theme/app_colors.dart'; // Ensure this file has the required color definitions.
 import 'package:aloria/widgets/bottom_nav.dart';
+import 'package:aloria/widgets/app_bar.dart'; 
 
 class ShopScreen extends StatefulWidget {
   const ShopScreen({super.key});
@@ -9,9 +11,11 @@ class ShopScreen extends StatefulWidget {
   @override
   // ignore: library_private_types_in_public_api
   _ShopScreenState createState() => _ShopScreenState();
+  
 }
 
 class _ShopScreenState extends State<ShopScreen> {
+   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>(); 
   final List<Map<String, String>> productList = [
     {
       'imageAssetPath': 'assets/images/product1.png',
@@ -50,9 +54,11 @@ class _ShopScreenState extends State<ShopScreen> {
   int _selectedIndex = 0; // Default index if nothing is selected
 
  
-  @override
+ @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
+      drawer: const CustomDrawer(),  // Adding the drawer here
       body: SafeArea(
         child: CustomScrollView(
           slivers: <Widget>[
@@ -68,28 +74,26 @@ class _ShopScreenState extends State<ShopScreen> {
           ],
         ),
       ),
-       bottomNavigationBar: CustomBottomNavigationBar(
-        selectedIndex: _selectedIndex,
+      bottomNavigationBar: CustomBottomNavigationBar(
+        selectedIndex: 0,
         onItemSelected: (index) {
           setState(() {
-            _selectedIndex = index;
+            // Update selected index
           });
         },
       ),
     );
   }
 
-  SliverAppBar _buildSliverAppBar(BuildContext context) {
+ SliverAppBar _buildSliverAppBar(BuildContext context) {
     return SliverAppBar(
-      backgroundColor: Colors.white, // White background color
-      pinned: true, // AppBar stays visible at the top when scrolling
+      backgroundColor: Colors.white,
+      pinned: true,
       leading: IconButton(
         icon: Icon(UniconsLine.paragraph, color: Colors.black),
-        onPressed: () {
-          Navigator.of(context).pop(); // Navigates back on tap
-        },
+        onPressed: () => _scaffoldKey.currentState?.openDrawer(),  // This opens the drawer
       ),
-      title: Text(
+      title: const Text(
         'Hi, Anna',
         style: TextStyle(
           fontFamily: 'Nunito',
@@ -106,16 +110,16 @@ class _ShopScreenState extends State<ShopScreen> {
         ),
       ],
       bottom: PreferredSize(
-        preferredSize: Size.fromHeight(48.0), // Height for the search area
+        preferredSize: const Size.fromHeight(48.0), // Height for the search area
         child: Padding(
-          padding: EdgeInsets.symmetric(
+          padding: const EdgeInsets.symmetric(
               horizontal:
                   16.0), // Horizontal padding for the AppBar's bottom area
           child: Row(
             mainAxisAlignment: MainAxisAlignment
                 .spaceBetween, // Space between the leading and trailing icons
             children: [
-              Icon(UniconsLine.filter,
+              const Icon(UniconsLine.filter,
                   size: 20.0, color: Colors.grey), // Filter icon on the left
               Row(
                 // Search area on the right
@@ -123,7 +127,7 @@ class _ShopScreenState extends State<ShopScreen> {
                     MainAxisSize.min, // Takes the size of its children
                 children: [
                   Container(
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                         horizontal: 16.0,
                         vertical:
                             8.0), // Padding inside the container for 'Oily skin' text
@@ -133,7 +137,7 @@ class _ShopScreenState extends State<ShopScreen> {
                       borderRadius: BorderRadius.circular(
                           24.0), // Rounded corners for the container
                     ),
-                    child: Text(
+                    child: const Text(
                       'Oily skin',
                       style: TextStyle(
                         fontFamily: 'Nunito',
@@ -142,10 +146,10 @@ class _ShopScreenState extends State<ShopScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                       width:
                           8.0), // Space between 'Oily skin' text and search icon
-                  Icon(UniconsLine.search,
+                  const Icon(UniconsLine.search,
                       size: 20.0, color: Colors.grey), // Search icon
                 ],
               ),
