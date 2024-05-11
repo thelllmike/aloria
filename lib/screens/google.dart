@@ -1,7 +1,10 @@
+import 'package:aloria/screens/firstscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart'; // Make sure this package is added to your pubspec.yaml
 
 class GoogleScreen extends StatelessWidget {
+  const GoogleScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     // Get the size of the screen for relative sizing
@@ -31,7 +34,7 @@ class GoogleScreen extends StatelessWidget {
             child: Container(
               width: screenSize.width,
               height: screenSize.height * 0.8, // Height is 80% of the screen height
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
@@ -52,7 +55,7 @@ class GoogleScreen extends StatelessWidget {
                 width: 24,
                 height: 24,
               ),
-              label: Text(
+              label: const Text(
                 'Continue with Google',
                 style: TextStyle(
                   fontFamily: 'Nunito',
@@ -63,14 +66,18 @@ class GoogleScreen extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 primary: Colors.green,
                 onPrimary: Colors.black.withOpacity(0.5),
-                minimumSize: Size(312, 35), // Adjust the size of the button as needed
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                minimumSize: const Size(312, 35), // Adjust the size of the button as needed
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
               onPressed: () {
-                // TODO: Handle the button tap
+                // Navigate to FirstScreen when the button is pressed
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const FirstScreen()),
+                );
               },
             ),
           ),

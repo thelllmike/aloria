@@ -4,7 +4,10 @@ import 'package:aloria/theme/app_colors.dart'; // Ensure this file has the requi
 import 'package:aloria/widgets/bottom_nav.dart';
 
 class SavedScreen extends StatefulWidget {
+  const SavedScreen({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _SavedScreenState createState() => _SavedScreenState();
 }
 

@@ -1,7 +1,11 @@
+import 'package:aloria/screens/google.dart';
 import 'package:flutter/material.dart';
 
 class SelfieScreen extends StatefulWidget {
+  const SelfieScreen({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _SelfieScreenState createState() => _SelfieScreenState();
 }
 
@@ -37,12 +41,12 @@ class _SelfieScreenState extends State<SelfieScreen> {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Spacer(),
+              const Spacer(),
            Container(
   width: 285,
   height: 285,
   decoration: BoxDecoration(
-    color: Color(0xFFC6C4FF).withOpacity(0.15),
+    color: const Color(0xFFC6C4FF).withOpacity(0.15),
     shape: BoxShape.circle,
   ),
   alignment: Alignment.center,
@@ -86,10 +90,10 @@ class _SelfieScreenState extends State<SelfieScreen> {
   ),
 ),
 
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Text(
                 'STEP ${currentPage + 1}',
-                style: TextStyle(
+                style: const TextStyle(
                   fontFamily: 'Bebas Neue',
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -103,7 +107,7 @@ class _SelfieScreenState extends State<SelfieScreen> {
                   stepContents[
                       currentPage], // Access the content based on the current page
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontFamily: 'Nunito',
                     fontSize: 16,
                     fontWeight: FontWeight.w400,
@@ -111,53 +115,58 @@ class _SelfieScreenState extends State<SelfieScreen> {
                   ),
                 ),
               ),
-              Spacer(),
+              const Spacer(),
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: List.generate(5, (index) {
                   return Container(
                     width: index == currentPage ? 64 : 8,
                     height: 8,
-                    margin: EdgeInsets.symmetric(horizontal: 4),
+                    margin: const EdgeInsets.symmetric(horizontal: 4),
                     decoration: BoxDecoration(
                       color: index == currentPage
-                          ? Color(0xFF403D3D1A)
-                          : Color(0xFF403D3D1A).withOpacity(0.5),
+                          ? const Color(0xFF403D3D1A)
+                          : const Color(0xFF403D3D1A).withOpacity(0.5),
                       borderRadius: BorderRadius.circular(4),
                     ),
                   );
                 }),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Container(
                 width: double.infinity,
-                padding: EdgeInsets.symmetric(horizontal: 29),
+                padding: const EdgeInsets.symmetric(horizontal: 29),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    primary: Color(0xFF77BF43),
+                    primary: const Color(0xFF77BF43),
                     onPrimary: Colors.white,
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    textStyle: TextStyle(
+                    textStyle: const TextStyle(
                       fontFamily: 'Nunito',
                       fontSize: 22,
                       fontWeight: FontWeight.w400,
                     ),
                   ),
-                  onPressed: () {
+                 onPressed: () {
                     setState(() {
                       if (currentPage < 4) {
-                        // Assume there are 3 steps
                         currentPage++;
+                      } else {
+                        // Navigate to GoogleScreen when on the last step
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => GoogleScreen()),
+                        );
                       }
                     });
                   },
-                  child: Text('Next'),
+                  child: Text(currentPage < 4 ? 'Next' : 'Start'),
                 ),
               ),
-              SizedBox(height: 34),
+              const SizedBox(height: 34),
             ],
           ),
         ],

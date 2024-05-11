@@ -3,6 +3,7 @@ import 'package:unicons/unicons.dart';
 import 'package:aloria/theme/app_colors.dart'; // Ensure this file has the required color definitions.
 
 class TestResultsScreen extends StatelessWidget {
+   TestResultsScreen({super.key});
   // Dummy product data - replace with your actual product data
   final List<Map<String, String>> productList = [
     {
@@ -38,6 +39,8 @@ class TestResultsScreen extends StatelessWidget {
      
     // Add more products as per your data
   ];
+
+ 
 
 @override
 Widget build(BuildContext context) {
@@ -116,6 +119,7 @@ SliverAppBar _buildSliverAppBar(BuildContext context) {
 
 
 Widget _buildContent(BuildContext context) {
+  // ignore: avoid_unnecessary_containers
   return Container(
   
     child: Column(
@@ -311,7 +315,7 @@ Widget _buildProductCard(
             children: [
               Text(
                 productName,
-                style: TextStyle(
+                style: const TextStyle(
                   fontFamily: 'Bebas Neue',
                   fontSize: 10.0,
                   color: Colors.black,

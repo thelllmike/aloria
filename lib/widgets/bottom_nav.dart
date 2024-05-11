@@ -1,7 +1,8 @@
+import 'package:aloria/screens/shop.dart';
 import 'package:aloria/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:unicons/unicons.dart';
-import 'package:flutter_svg/flutter_svg.dart';  // Import flutter_svg
+import 'package:flutter_svg/flutter_svg.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
   final int selectedIndex;
@@ -21,18 +22,18 @@ class CustomBottomNavigationBar extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
-            _buildBottomNavItem(UniconsLine.home_alt, 'Home', 0, smallerIcon: true),
-            _buildBottomNavItem(UniconsLine.store, 'Store', 1, smallerIcon: true),
-            _buildBottomNavItem(Icons.camera, '', 2, isSVG: true, isCameraIcon: true),  // Camera icon
-            _buildBottomNavItem(UniconsLine.heart, 'Saved', 3, smallerIcon: true),
-            _buildBottomNavItem(UniconsLine.shopping_basket, 'Cart', 4, smallerIcon: true),
+            _buildBottomNavItem(context, UniconsLine.home_alt, 'Home', 0, smallerIcon: true, navigateTo: 'FirstScreen'),
+            _buildBottomNavItem(context, UniconsLine.store, 'Store', 1, smallerIcon: true, navigateTo: 'ShopScreen'),
+            _buildBottomNavItem(context, Icons.camera, '', 2, isSVG: true, isCameraIcon: true),  // Camera icon
+            _buildBottomNavItem(context, UniconsLine.heart, 'Saved', 3, smallerIcon: true, navigateTo: 'SavedScreen'),
+            _buildBottomNavItem(context, UniconsLine.shopping_basket, 'Cart', 4, smallerIcon: true, navigateTo: 'CartScreen'),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildBottomNavItem(IconData icon, String label, int index, {bool isSVG = false, bool isCameraIcon = false, bool smallerIcon = false}) {
+  Widget _buildBottomNavItem(BuildContext context, IconData icon, String label, int index, {bool isSVG = false, bool isCameraIcon = false, bool smallerIcon = false, String? navigateTo}) {
     bool isSelected = selectedIndex == index;
     Color iconColor = isSelected ? AppColors.itemColor : Colors.grey;
     if (isCameraIcon) {
@@ -54,23 +55,28 @@ class CustomBottomNavigationBar extends StatelessWidget {
         height: 50
       );
     } else {
-      // Smaller size for non-camera icons if smallerIcon is true
       double iconSize = smallerIcon ? 24 : 30;  // Smaller size for other icons
       iconWidget = Icon(icon, color: iconColor, size: iconSize);
     }
 
     List<Widget> columnChildren = [iconWidget];
-    if (label.isNotEmpty) {  // Only add the label text if it is not empty
+    if (label.isNotEmpty) {
       columnChildren.add(Text(label, style: labelStyle));
     }
 
     return InkWell(
-      onTap: () => onItemSelected(index),
+      onTap: () {
+        if (navigateTo != null) {
+          Navigator.pushNamed(context, navigateTo);
+        } else {
+          onItemSelected(index);
+        }
+      },
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center, // Center icon when no text is present
+        mainAxisAlignment: MainAxisAlignment.center,
         children: columnChildren,
       ),
     );

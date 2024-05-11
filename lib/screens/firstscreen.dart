@@ -1,3 +1,4 @@
+import 'package:aloria/screens/testresult.dart';
 import 'package:aloria/theme/app_colors.dart';
 import 'package:aloria/widgets/bottom_nav.dart';
 import 'package:flutter/material.dart';
@@ -5,7 +6,10 @@ import 'package:unicons/unicons.dart';
 // Adjust the path according to your project structure
 
 class FirstScreen extends StatefulWidget {
+  const FirstScreen({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _FirstScreenState createState() => _FirstScreenState();
 }
 
@@ -52,7 +56,7 @@ class _FirstScreenState extends State<FirstScreen> {
                 ),
               ),
             ),
-         ListView.separated(
+        ListView.separated(
   shrinkWrap: true,
   physics: const NeverScrollableScrollPhysics(),
   itemCount: 4,
@@ -62,9 +66,9 @@ class _FirstScreenState extends State<FirstScreen> {
         color: AppColors.itemColor,
         borderRadius: BorderRadius.circular(45.0),
       ),
-      margin: EdgeInsets.symmetric(horizontal: 36.0, vertical: 4.0),
+      margin: const EdgeInsets.symmetric(horizontal: 36.0, vertical: 4.0),
       child: ListTile(
-        contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),  // Reduced horizontal padding
+        contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
         leading: const CircleAvatar(
           radius: 44,
           backgroundImage: AssetImage('assets/images/pro.png'),
@@ -86,12 +90,18 @@ class _FirstScreenState extends State<FirstScreen> {
             color: Colors.white.withOpacity(0.7),
           ),
         ),
-        trailing: Icon(UniconsLine.angle_right_b, color: Colors.white , size: 52.0,),
+        trailing: const Icon(UniconsLine.angle_right_b, color: Colors.white, size: 52.0,),
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => TestResultsScreen(), // Make sure 'TestResultsScreen' is the correct name of your destination screen
+          ));
+        },
       ),
     );
   },
-  separatorBuilder: (BuildContext context, int index) => SizedBox(height: 10),
+  separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 10),
 ),
+
 
             const Padding(
               padding: EdgeInsets.all(16.0),
