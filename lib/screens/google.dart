@@ -1,5 +1,6 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http; 
+
+import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -37,21 +38,29 @@ class GoogleScreen extends StatelessWidget {
         print('Firebase sign-in successful, user: ${user.email}');
         String email = user.email ?? '';
 
-        // Send the email to your FastAPI backend
+        // Send the email to your FastAPI backend as a query parameter
         print('Sending email to backend');
         final response = await http.post(
-          Uri.parse('http://172.20.10.3:8001/users/save_email'), // Replace with your local network IP and port
-          headers: {'Content-Type': 'application/json'},
-          body: jsonEncode({'email': email}),
+          Uri.parse('http://10.0.2.2:8001/users/save_email/?email=$email'), // Use 10.0.2.2 for emulator
+          headers: {'accept': 'application/json'},
         );
 
         if (response.statusCode == 200) {
-          print('Email successfully saved, navigating to FirstScreen');
-          // Navigate to FirstScreen if the email is successfully saved
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const FirstScreen()),
-          );
+          final responseBody = jsonDecode(response.body);
+          if (responseBody['message'] == 'Email saved successfully') {
+            print('Email successfully saved, navigating to FirstScreen');
+            // Navigate to FirstScreen if the email is successfully saved
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const FirstScreen()),
+            );
+          } else {
+            print('Failed to save email: ${responseBody['message']}');
+            // Handle email already registered case
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(responseBody['message'])),
+            );
+          }
         } else {
           print('Failed to save email: ${response.body}');
           // Handle error response
