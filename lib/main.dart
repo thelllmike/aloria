@@ -1,9 +1,11 @@
+import 'package:aloria/firebase_options.dart';
 import 'package:aloria/screens/chat.dart';
 import 'package:aloria/screens/chatlist.dart';
 import 'package:aloria/screens/savedscan.dart';
 import 'package:aloria/screens/skintype/CombinationSkin.dart';
 import 'package:aloria/screens/skintype/OilySkin.dart';
 import 'package:aloria/screens/skintype/dry.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 import 'package:aloria/screens/cart.dart';
@@ -15,10 +17,14 @@ import 'package:aloria/screens/paymentmethod.dart';
 import 'package:aloria/screens/shop.dart';
 
 
-
-void main() {
-  runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(const MyApp());
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
