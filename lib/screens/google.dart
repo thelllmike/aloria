@@ -1,4 +1,5 @@
 import 'package:aloria/screens/firstscreen.dart';
+import 'package:aloria/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart'; // Make sure this package is added to your pubspec.yaml
 
@@ -64,7 +65,7 @@ class GoogleScreen extends StatelessWidget {
                 ),
               ),
               style: ElevatedButton.styleFrom(
-                primary: Colors.green,
+                primary: AppColors.accentGreen,
                 onPrimary: Colors.black.withOpacity(0.5),
                 minimumSize: const Size(312, 35), // Adjust the size of the button as needed
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),

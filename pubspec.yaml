@@ -74,6 +74,9 @@ flutter:
     - assets/images/oily_skin.png
     - assets/images/combination_skin.png
     - assets/images/normal_skin.png
+    - assets/images/oily.png
+    - assets/images/combination.png
+    - assets/images/normal.png
     - assets/images/pro.png
     - assets/images/test.png
     - assets/images/cart.png
