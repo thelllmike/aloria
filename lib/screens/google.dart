@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +37,6 @@ class GoogleScreen extends StatelessWidget {
         print('Firebase sign-in successful, user: ${user.email}');
         String email = user.email ?? '';
 
-        // Send the email to your FastAPI backend as a query parameter
         print('Sending email to backend');
         final response = await http.post(
           Uri.parse('http://10.0.2.2:8001/users/save_email/?email=$email'), // Use 10.0.2.2 for emulator
@@ -49,21 +47,22 @@ class GoogleScreen extends StatelessWidget {
           final responseBody = jsonDecode(response.body);
           if (responseBody['message'] == 'Email saved successfully') {
             print('Email successfully saved, navigating to FirstScreen');
-            // Navigate to FirstScreen if the email is successfully saved
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const FirstScreen()),
-            );
+            if (context.mounted) {
+              _navigateToFirstScreen(context);
+            }
+          } else if (responseBody['message'] == 'Email already registered') {
+            print('Email already registered, navigating to FirstScreen');
+            if (context.mounted) {
+              _navigateToFirstScreen(context);
+            }
           } else {
             print('Failed to save email: ${responseBody['message']}');
-            // Handle email already registered case
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(responseBody['message'])),
             );
           }
         } else {
           print('Failed to save email: ${response.body}');
-          // Handle error response
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Failed to save email: ${response.body}')),
           );
@@ -77,6 +76,27 @@ class GoogleScreen extends StatelessWidget {
         SnackBar(content: Text('Sign in failed: $e')),
       );
     }
+  }
+
+  void _navigateToFirstScreen(BuildContext context) {
+    Navigator.pushReplacement(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => const FirstScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(1.0, 0.0);  // Change these values to adjust the transition
+          const end = Offset.zero;
+          const curve = Curves.easeInOut;
+
+          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+          return SlideTransition(
+            position: animation.drive(tween),
+            child: child,
+          );
+        },
+      ),
+    );
   }
 
   @override

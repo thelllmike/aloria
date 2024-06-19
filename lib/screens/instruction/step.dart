@@ -5,7 +5,6 @@ class SelfieScreen extends StatefulWidget {
   const SelfieScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _SelfieScreenState createState() => _SelfieScreenState();
 }
 
@@ -42,54 +41,52 @@ class _SelfieScreenState extends State<SelfieScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               const Spacer(),
-           Container(
-  width: 285,
-  height: 285,
-  decoration: BoxDecoration(
-    color: const Color(0xFFC6C4FF).withOpacity(0.15),
-    shape: BoxShape.circle,
-  ),
-  alignment: Alignment.center,
-  child: OverflowBox(
-    maxWidth: 390,
-    maxHeight: 390,
-    child: currentPage >= 0 && currentPage <= 4 // Ensure currentPage is within the range
-        ? Transform(
-            // Apply different transformations depending on the page.
-            transform: Matrix4.identity()
-              ..translate(
-                currentPage == 0 ? 0.0 :
-                currentPage == 1 ? -8.0 :
-                currentPage == 2 ? 30.0 :
-                currentPage == 3 ? 0.0 :
-                currentPage == 4 ? 20.0 : 0.0, // X translation
-
-                currentPage == 0 ? 0.0 :
-                currentPage == 1 ? -74.5 :
-                currentPage == 2 ? -10.0 :
-                currentPage == 3 ? 0.0 :
-                currentPage == 4 ? -25.0 : 0.0, // Y translation
-              )
-              ..scale(
-                currentPage == 0 ? 1.0 :
-                currentPage == 1 ? 1.05 :
-                currentPage == 2 ? 0.98 :
-                currentPage == 3 ? 1.0 :
-                currentPage == 4 ? 0.93 : 1.0, // Scale
+              Container(
+                width: 285,
+                height: 285,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFC6C4FF).withOpacity(0.15),
+                  shape: BoxShape.circle,
+                ),
+                alignment: Alignment.center,
+                child: OverflowBox(
+                  maxWidth: 390,
+                  maxHeight: 390,
+                  child: currentPage >= 0 && currentPage <= 4 // Ensure currentPage is within the range
+                      ? Transform(
+                          // Apply different transformations depending on the page.
+                          transform: Matrix4.identity()
+                            ..translate(
+                              currentPage == 0 ? 0.0 :
+                              currentPage == 1 ? -8.0 :
+                              currentPage == 2 ? 30.0 :
+                              currentPage == 3 ? 0.0 :
+                              currentPage == 4 ? 20.0 : 0.0, // X translation
+                              currentPage == 0 ? 0.0 :
+                              currentPage == 1 ? -74.5 :
+                              currentPage == 2 ? -10.0 :
+                              currentPage == 3 ? 0.0 :
+                              currentPage == 4 ? -25.0 : 0.0, // Y translation
+                            )
+                            ..scale(
+                              currentPage == 0 ? 1.0 :
+                              currentPage == 1 ? 1.05 :
+                              currentPage == 2 ? 0.98 :
+                              currentPage == 3 ? 1.0 :
+                              currentPage == 4 ? 0.93 : 1.0, // Scale
+                            ),
+                          child: Image.asset(
+                            'assets/images/step${currentPage + 1}.png',
+                            fit: BoxFit.cover,
+                          ),
+                        )
+                      : Image.asset(
+                          // No transformation for other steps.
+                          'assets/images/step${currentPage + 1}.png',
+                          fit: BoxFit.cover,
+                        ),
+                ),
               ),
-            child: Image.asset(
-              'assets/images/step${currentPage + 1}.png',
-              fit: BoxFit.cover,
-            ),
-          )
-        : Image.asset(
-            // No transformation for other steps.
-            'assets/images/step${currentPage + 1}.png',
-            fit: BoxFit.cover,
-          ),
-  ),
-),
-
               const SizedBox(height: 20),
               Text(
                 'STEP ${currentPage + 1}',
@@ -104,8 +101,7 @@ class _SelfieScreenState extends State<SelfieScreen> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  stepContents[
-                      currentPage], // Access the content based on the current page
+                  stepContents[currentPage], // Access the content based on the current page
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontFamily: 'Nunito',
@@ -150,15 +146,32 @@ class _SelfieScreenState extends State<SelfieScreen> {
                       fontWeight: FontWeight.w400,
                     ),
                   ),
-                 onPressed: () {
+                  onPressed: () {
                     setState(() {
                       if (currentPage < 4) {
                         currentPage++;
                       } else {
-                        // Navigate to GoogleScreen when on the last step
-                        Navigator.push(
+                        // Navigate to GoogleScreen when on the last step using PageRouteBuilder
+                        Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => GoogleScreen()),
+                          PageRouteBuilder(
+                            pageBuilder: (context, animation, secondaryAnimation) => const GoogleScreen(),
+                            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                              var begin = const Offset(1.0, 0.0); // Slide in from the right
+                              var end = Offset.zero;
+                              var curve = Curves.easeInOut;
+
+                              var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+                              return SlideTransition(
+                                position: animation.drive(tween),
+                                child: FadeTransition(
+                                  opacity: animation,
+                                  child: child,
+                                ),
+                              );
+                            },
+                          ),
                         );
                       }
                     });
