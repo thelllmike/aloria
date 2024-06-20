@@ -1,5 +1,7 @@
+import 'package:aloria/screens/chat.dart';
 import 'package:flutter/material.dart';
 import 'package:unicons/unicons.dart';
+
 
 class CustomSliverAppBar extends StatelessWidget {
   final String title;
@@ -21,7 +23,7 @@ class CustomSliverAppBar extends StatelessWidget {
       backgroundColor: Colors.white,
       pinned: true,
       leading: leading ?? IconButton(
-        icon: Icon(UniconsLine.paragraph, color: Colors.black),
+        icon: const Icon(UniconsLine.paragraph, color: Colors.black),
         onPressed: () => Navigator.of(context).pop(),
       ),
       title: Text(
@@ -36,7 +38,10 @@ class CustomSliverAppBar extends StatelessWidget {
         IconButton(
           icon: const Icon(UniconsLine.comments, color: Colors.black),
           onPressed: () {
-            // Implement action
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ChatScreen()), // Navigate to ChatScreen
+            );
           },
         ),
       ],

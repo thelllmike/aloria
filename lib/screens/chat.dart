@@ -1,9 +1,117 @@
+import 'package:aloria/screens/utils/api_service.dart';
 import 'package:flutter/material.dart';
-// ignore: unnecessary_import
-import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-class ChatScreen extends StatelessWidget {
+class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
+
+  @override
+  _ChatScreenState createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends State<ChatScreen> {
+  List messages = [];
+  TextEditingController messageController = TextEditingController();
+  final int adminId = 3; // ID of cleverprojectlk
+  final int userId = 1; // Your user ID (update as needed)
+  int conversationId = 0; // ID of the conversation with the admin
+
+  @override
+  void initState() {
+    super.initState();
+    fetchConversation();
+  }
+
+  Future<void> fetchConversation() async {
+    final url = Uri.parse('${ApiService.baseUrl}/api/conversations/');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final List conversations = json.decode(response.body);
+      final conversation = conversations.firstWhere(
+        (conv) => (conv['user1_id'] == userId && conv['user2_id'] == adminId) ||
+                  (conv['user1_id'] == adminId && conv['user2_id'] == userId),
+        orElse: () => null,
+      );
+
+      if (conversation != null) {
+        setState(() {
+          conversationId = conversation['conversation_id'];
+        });
+        fetchMessages();
+      } else {
+        createConversation();
+      }
+    } else {
+      throw Exception('Failed to load conversations');
+    }
+  }
+
+  Future<void> createConversation() async {
+    final url = Uri.parse('${ApiService.baseUrl}/api/conversations/');
+    final response = await http.post(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode({
+        'user1_id': userId,
+        'user2_id': adminId,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final conversation = json.decode(response.body);
+      setState(() {
+        conversationId = conversation['conversation_id'];
+      });
+      fetchMessages();
+    } else {
+      throw Exception('Failed to create conversation');
+    }
+  }
+
+  Future<void> fetchMessages() async {
+    if (conversationId == 0) return;
+
+    final url = Uri.parse('${ApiService.baseUrl}/api/conversations/$conversationId');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      setState(() {
+        messages = json.decode(response.body)['messages'];
+      });
+    } else {
+      throw Exception('Failed to load messages');
+    }
+  }
+
+  Future<void> sendMessage() async {
+    if (messageController.text.isEmpty || conversationId == 0) return;
+
+    final url = Uri.parse('${ApiService.baseUrl}/api/messages/');
+    final response = await http.post(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode({
+        'conversation_id': conversationId,
+        'sender_id': userId,
+        'message': messageController.text,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      setState(() {
+        messages.add(json.decode(response.body));
+      });
+      messageController.clear();
+    } else {
+      throw Exception('Failed to send message');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,17 +135,23 @@ class ChatScreen extends StatelessWidget {
       body: Column(
         children: [
           Expanded(
-            child: ListView(
+            child: ListView.builder(
               padding: const EdgeInsets.all(20),
-              children: const [
-                ChatBubble(text: 'Lorem ipsum dolor sit amet', isUser: true),
-                ChatBubble(text: 'Lorem ipsum dolor sit amet', isUser: false),
-              ],
+              itemCount: messages.length,
+              itemBuilder: (context, index) {
+                final message = messages[index];
+                final isUser = message['sender_id'] == userId;
+                return ChatBubble(
+                  text: message['message'],
+                  isUser: isUser,
+                );
+              },
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextField(
+              controller: messageController,
               decoration: InputDecoration(
                 hintText: 'Message',
                 filled: true,
@@ -48,7 +162,7 @@ class ChatScreen extends StatelessWidget {
                 ),
                 suffixIcon: IconButton(
                   icon: const Icon(Icons.send, color: Color(0xFF77BF43)),
-                  onPressed: () {},
+                  onPressed: sendMessage,
                 ),
               ),
             ),

@@ -1,3 +1,4 @@
+import 'package:aloria/screens/chat.dart';
 import 'package:flutter/material.dart';
 import 'package:unicons/unicons.dart';
 import 'package:aloria/widgets/bottom_nav.dart'; // Assuming you have this custom widget.
@@ -295,7 +296,10 @@ class _CartScreenState extends State<CartScreen> {
         IconButton(
           icon: const Icon(UniconsLine.comments, color: Colors.black),
           onPressed: () {
-            // Search button action
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ChatScreen()), // Navigate to ChatScreen
+            );
           },
         ),
       ],

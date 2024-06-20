@@ -1,3 +1,4 @@
+import 'package:aloria/screens/chat.dart';
 import 'package:flutter/material.dart';
 import 'package:unicons/unicons.dart';
 import 'package:aloria/theme/app_colors.dart'; // Ensure this file has the required color definitions.
@@ -99,8 +100,11 @@ class _SavedScreenState extends State<SavedScreen> {
       actions: [
         IconButton(
           icon: const Icon(UniconsLine.comments, color: Colors.black),
-          onPressed: () {
-            // Search button action
+         onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ChatScreen()), // Navigate to ChatScreen
+            );
           },
         ),
       ],

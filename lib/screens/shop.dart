@@ -1,3 +1,4 @@
+import 'package:aloria/screens/chat.dart';
 import 'package:aloria/widgets/menu.dart';
 import 'package:flutter/material.dart';
 import 'package:unicons/unicons.dart';
@@ -104,8 +105,11 @@ class _ShopScreenState extends State<ShopScreen> {
       actions: [
         IconButton(
           icon: const Icon(UniconsLine.comments, color: Colors.black),
-          onPressed: () {
-            // Search button action
+           onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ChatScreen()), // Navigate to ChatScreen
+            );
           },
         ),
       ],

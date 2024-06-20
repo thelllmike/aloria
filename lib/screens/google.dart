@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:aloria/screens/utils/global_user.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:aloria/screens/firstscreen.dart';
 import 'package:aloria/theme/app_colors.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // Import shared_preferences
+
 
 class GoogleScreen extends StatelessWidget {
   const GoogleScreen({super.key});
@@ -35,6 +38,16 @@ class GoogleScreen extends StatelessWidget {
 
       if (user != null) {
         print('Firebase sign-in successful, user: ${user.email}');
+        GlobalUser.name = user.displayName;
+        GlobalUser.email = user.email;
+        GlobalUser.profilePictureUrl = user.photoURL;
+
+        // Save user information to shared preferences
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('name', GlobalUser.name ?? '');
+        await prefs.setString('email', GlobalUser.email ?? '');
+        await prefs.setString('profilePictureUrl', GlobalUser.profilePictureUrl ?? '');
+
         String email = user.email ?? '';
 
         print('Sending email to backend');
@@ -45,13 +58,8 @@ class GoogleScreen extends StatelessWidget {
 
         if (response.statusCode == 200) {
           final responseBody = jsonDecode(response.body);
-          if (responseBody['message'] == 'Email saved successfully') {
+          if (responseBody['message'] == 'Email saved successfully' || responseBody['message'] == 'Email already registered') {
             print('Email successfully saved, navigating to FirstScreen');
-            if (context.mounted) {
-              _navigateToFirstScreen(context);
-            }
-          } else if (responseBody['message'] == 'Email already registered') {
-            print('Email already registered, navigating to FirstScreen');
             if (context.mounted) {
               _navigateToFirstScreen(context);
             }
