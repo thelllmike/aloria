@@ -1,3 +1,6 @@
+import 'package:aloria/screens/cart.dart';
+import 'package:aloria/screens/firstscreen.dart';
+import 'package:aloria/screens/savedscan.dart';
 import 'package:aloria/screens/shop.dart';
 import 'package:aloria/theme/app_colors.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +40,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
     bool isSelected = selectedIndex == index;
     Color iconColor = isSelected ? AppColors.itemColor : Colors.grey;
     if (isCameraIcon) {
-      iconColor = Color(0xFF77BF43);  // Specific color for camera icon
+      iconColor = const Color(0xFF77BF43);  // Specific color for camera icon
     }
 
     TextStyle labelStyle = TextStyle(
@@ -52,7 +55,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
         'assets/icons/shutter.svg',
         color: iconColor,
         width: 50,  // Larger size for camera icon
-        height: 50
+        height: 50,
       );
     } else {
       double iconSize = smallerIcon ? 24 : 30;  // Smaller size for other icons
@@ -67,7 +70,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
     return InkWell(
       onTap: () {
         if (navigateTo != null) {
-          Navigator.pushNamed(context, navigateTo);
+          _navigateTo(context, navigateTo);
         } else {
           onItemSelected(index);
         }
@@ -80,5 +83,45 @@ class CustomBottomNavigationBar extends StatelessWidget {
         children: columnChildren,
       ),
     );
+  }
+
+  void _navigateTo(BuildContext context, String routeName) {
+    Navigator.pushAndRemoveUntil(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => _getPage(routeName),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(1.0, 0.0);  // Slide from the right
+          const end = Offset.zero;
+          const curve = Curves.easeInOut;
+
+          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+          return SlideTransition(
+            position: animation.drive(tween),
+            child: FadeTransition(
+              opacity: animation,
+              child: child,
+            ),
+          );
+        },
+      ),
+      (Route<dynamic> route) => false, // Remove all previous routes
+    );
+  }
+
+  Widget _getPage(String routeName) {
+    switch (routeName) {
+      case 'FirstScreen':
+        return FirstScreen();
+      case 'ShopScreen':
+        return ShopScreen();
+      case 'SavedScreen':
+        return SavedScreen();
+      case 'CartScreen':
+        return CartScreen();
+      default:
+        return FirstScreen();  // Default to FirstScreen if route is not found
+    }
   }
 }

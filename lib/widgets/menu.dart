@@ -1,5 +1,7 @@
+import 'package:aloria/screens/chat.dart';
 import 'package:flutter/material.dart';
 import 'package:unicons/unicons.dart';
+
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({Key? key}) : super(key: key);
@@ -35,11 +37,14 @@ class CustomDrawer extends StatelessWidget {
             leading: Icon(UniconsLine.chat_info),
             title: Text('Chat with us'),
             onTap: () {
-              // Navigate or perform actions
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ChatScreen()),  // Navigate to ChatScreen
+              );
             },
           ),
           ListTile(
-            leading: Icon(UniconsLine.signout),
+            leading: const Icon(UniconsLine.signout),
             title: const Text('Log out'),
             onTap: () {
               // Navigate or perform actions
