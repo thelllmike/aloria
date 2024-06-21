@@ -1,65 +1,114 @@
+import 'dart:typed_data';
 import 'package:aloria/screens/chat.dart';
+import 'package:aloria/screens/utils/api_service.dart';
+import 'package:aloria/theme/app_colors.dart';
+import 'package:aloria/widgets/bottom_nav.dart';
 import 'package:aloria/widgets/menu.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:unicons/unicons.dart';
-import 'package:aloria/theme/app_colors.dart'; // Ensure this file has the required color definitions.
-import 'package:aloria/widgets/bottom_nav.dart';
-import 'package:aloria/widgets/app_bar.dart'; 
+import 'dart:convert';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+
+class Product {
+  final int id;
+  final String name;
+  final String description;
+  final double price;
+  final int stock;
+  final String category;
+  final String brand;
+  final String imageUrl;
+
+  Product({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.price,
+    required this.stock,
+    required this.category,
+    required this.brand,
+    required this.imageUrl,
+  });
+
+  factory Product.fromJson(Map<String, dynamic> json) {
+    return Product(
+      id: json['product_id'],
+      name: json['product_name'] ?? 'Unknown Product',
+      description: json['description'] ?? '',
+      price: json['price'] != null ? json['price'].toDouble() : 0.0,
+      stock: json['stock'] ?? 0,
+      category: json['category'] ?? 'Unknown',
+      brand: json['brand'] ?? 'Unknown',
+      imageUrl: json['images'] != null && json['images'].isNotEmpty ? json['images'][0]['image_url'] : '',
+    );
+  }
+}
 
 class ShopScreen extends StatefulWidget {
   const ShopScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _ShopScreenState createState() => _ShopScreenState();
-  
 }
 
 class _ShopScreenState extends State<ShopScreen> {
-   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>(); 
-  final List<Map<String, String>> productList = [
-    {
-      'imageAssetPath': 'assets/images/product1.png',
-      'name': 'Squalene Cleanser',
-      'price': '\$20'
-    },
-    {
-      'imageAssetPath': 'assets/images/product1.png',
-      'name': 'Moisturizing Cream',
-      'price': '\$15'
-    },
-    {
-      'imageAssetPath': 'assets/images/product1.png',
-      'name': 'Squalene Cleanser',
-      'price': '\$20'
-    },
-    {
-      'imageAssetPath': 'assets/images/product1.png',
-      'name': 'Moisturizing Cream',
-      'price': '\$15'
-    },
-    {
-      'imageAssetPath': 'assets/images/product1.png',
-      'name': 'Squalene Cleanser',
-      'price': '\$20'
-    },
-    {
-      'imageAssetPath': 'assets/images/product1.png',
-      'name': 'Moisturizing Cream',
-      'price': '\$15'
-    },
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>(); // Define the scaffold key
+  int _selectedIndex = 0; // Define the selected index
 
-    // Add more products as per your data
-  ];
+  List<Product> productList = [];
 
-  int _selectedIndex = 0; // Default index if nothing is selected
+  @override
+  void initState() {
+    super.initState();
+    fetchProducts();
+  }
 
- 
- @override
+  Future<void> fetchProducts() async {
+    final response = await ApiService.getProducts();
+
+    if (response.statusCode == 200) {
+      final List<dynamic> productJson = json.decode(response.body);
+      setState(() {
+        productList = productJson.map((json) => Product.fromJson(json)).toList();
+      });
+
+      // Debugging: Print the product list to verify the image URLs
+      for (var product in productList) {
+        print('Product: ${product.name}, Image URL: ${product.imageUrl}');
+      }
+    } else {
+      throw Exception('Failed to load products');
+    }
+  }
+
+  Future<Uint8List?> resizeImage(String url, int width, int height) async {
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final originalImage = response.bodyBytes;
+        final compressedImage = await FlutterImageCompress.compressWithList(
+          originalImage,
+          minWidth: width,
+          minHeight: height,
+          quality: 85,
+        );
+        return Uint8List.fromList(compressedImage);
+      } else {
+        print('Failed to load image from $url, status code: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Error resizing image from $url: $e');
+      return null;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      drawer: const CustomDrawer(),  // Adding the drawer here
+      drawer: const CustomDrawer(),
       body: SafeArea(
         child: CustomScrollView(
           slivers: <Widget>[
@@ -76,23 +125,23 @@ class _ShopScreenState extends State<ShopScreen> {
         ),
       ),
       bottomNavigationBar: CustomBottomNavigationBar(
-        selectedIndex: 0,
+        selectedIndex: _selectedIndex,
         onItemSelected: (index) {
           setState(() {
-            // Update selected index
+            _selectedIndex = index;
           });
         },
       ),
     );
   }
 
- SliverAppBar _buildSliverAppBar(BuildContext context) {
+  SliverAppBar _buildSliverAppBar(BuildContext context) {
     return SliverAppBar(
       backgroundColor: Colors.white,
       pinned: true,
       leading: IconButton(
-        icon: Icon(UniconsLine.paragraph, color: Colors.black),
-        onPressed: () => _scaffoldKey.currentState?.openDrawer(),  // This opens the drawer
+        icon: const Icon(UniconsLine.paragraph, color: Colors.black),
+        onPressed: () => _scaffoldKey.currentState?.openDrawer(),
       ),
       title: const Text(
         'Hi, Anna',
@@ -105,41 +154,30 @@ class _ShopScreenState extends State<ShopScreen> {
       actions: [
         IconButton(
           icon: const Icon(UniconsLine.comments, color: Colors.black),
-           onPressed: () {
+          onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const ChatScreen()), // Navigate to ChatScreen
+              MaterialPageRoute(builder: (context) => const ChatScreen()),
             );
           },
         ),
       ],
       bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(48.0), // Height for the search area
+        preferredSize: const Size.fromHeight(48.0),
         child: Padding(
-          padding: const EdgeInsets.symmetric(
-              horizontal:
-                  16.0), // Horizontal padding for the AppBar's bottom area
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment
-                .spaceBetween, // Space between the leading and trailing icons
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Icon(UniconsLine.filter,
-                  size: 20.0, color: Colors.grey), // Filter icon on the left
+              const Icon(UniconsLine.filter, size: 20.0, color: Colors.grey),
               Row(
-                // Search area on the right
-                mainAxisSize:
-                    MainAxisSize.min, // Takes the size of its children
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0,
-                        vertical:
-                            8.0), // Padding inside the container for 'Oily skin' text
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                     decoration: BoxDecoration(
-                      color: Colors.grey[
-                          200], // Soft grey color for 'Oily skin' text background
-                      borderRadius: BorderRadius.circular(
-                          24.0), // Rounded corners for the container
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(24.0),
                     ),
                     child: const Text(
                       'Oily skin',
@@ -150,11 +188,8 @@ class _ShopScreenState extends State<ShopScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                      width:
-                          8.0), // Space between 'Oily skin' text and search icon
-                  const Icon(UniconsLine.search,
-                      size: 20.0, color: Colors.grey), // Search icon
+                  const SizedBox(width: 8.0),
+                  const Icon(UniconsLine.search, size: 20.0, color: Colors.grey),
                 ],
               ),
             ],
@@ -181,25 +216,45 @@ class _ShopScreenState extends State<ShopScreen> {
             itemCount: productList.length,
             itemBuilder: (context, index) {
               final product = productList[index];
-              return _buildProductCard(
-                context,
-                product['imageAssetPath']!,
-                product['name']!,
-                product['price']!,
+              // ignore: avoid_print
+              print('Loading image for product: ${product.name}, URL: ${product.imageUrl}');
+              return FutureBuilder<Uint8List?>(
+                future: resizeImage(product.imageUrl, 160, 110),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.hasData) {
+                      return _buildProductCard(
+                        context,
+                        MemoryImage(snapshot.data!),
+                        product.name,
+                        product.brand,
+                        product.price.toString(),
+                      );
+                    } else if (snapshot.hasError || snapshot.data == null) {
+                      print('Error loading image: ${snapshot.error}');
+                      return _buildProductCard(
+                        context,
+                        null,
+                        product.name,
+                        product.brand,
+                        product.price.toString(),
+                      );
+                    }
+                  }
+                  return Center(child: CircularProgressIndicator());
+                },
               );
             },
           ),
-          const SizedBox(height: 20), // Space before the button
+          const SizedBox(height: 20),
         ],
       ),
     );
   }
 
-  Widget _buildProductCard(BuildContext context, String assetPath,
-      String productName, String productPrice) {
+  Widget _buildProductCard(BuildContext context, ImageProvider? imageProvider, String productName, String productBrand, String productPrice) {
     return Card(
-      margin: const EdgeInsets.fromLTRB(
-          10.0, 10.0, 14.0, 0.0), // Increased bottom margin
+      margin: const EdgeInsets.fromLTRB(10.0, 10.0, 14.0, 0.0),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.0),
       ),
@@ -210,14 +265,20 @@ class _ShopScreenState extends State<ShopScreen> {
           Stack(
             children: [
               ClipRRect(
-                borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(12.0)),
-                child: Image.asset(
-                  assetPath,
-                  width: 160.0,
-                  height: 110.0,
-                  fit: BoxFit.cover,
-                ),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(12.0)),
+                child: imageProvider != null
+                    ? Image(
+                        image: imageProvider,
+                        width: 160.0,
+                        height: 110.0,
+                        fit: BoxFit.cover,
+                      )
+                    : Container(
+                        width: 160.0,
+                        height: 110.0,
+                        color: Colors.grey,
+                        child: const Icon(Icons.error, color: Colors.red),
+                      ),
               ),
               Positioned(
                 top: 8.0,
@@ -246,8 +307,7 @@ class _ShopScreenState extends State<ShopScreen> {
             ],
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(
-                8.0, 8.0, 8.0, 20.0), // Increased bottom padding
+            padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 20.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -259,12 +319,12 @@ class _ShopScreenState extends State<ShopScreen> {
                     color: Colors.black,
                   ),
                 ),
-                SizedBox(height: 6),
+                const SizedBox(height: 6),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      productName,
+                      productBrand,
                       style: const TextStyle(
                         fontFamily: 'Bebas Neue',
                         fontSize: 12.0,

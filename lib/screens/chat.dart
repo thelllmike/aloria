@@ -2,6 +2,8 @@ import 'package:aloria/screens/utils/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:web_socket_channel/status.dart' as status;
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -16,6 +18,7 @@ class _ChatScreenState extends State<ChatScreen> {
   final int adminId = 3; // ID of cleverprojectlk
   final int userId = 1; // Your user ID (update as needed)
   int conversationId = 0; // ID of the conversation with the admin
+  late WebSocketChannel channel;
 
   @override
   void initState() {
@@ -82,9 +85,20 @@ class _ChatScreenState extends State<ChatScreen> {
       setState(() {
         messages = json.decode(response.body)['messages'];
       });
+      initWebSocket();
     } else {
       throw Exception('Failed to load messages');
     }
+  }
+
+  void initWebSocket() {
+    channel = WebSocketChannel.connect(Uri.parse('${ApiService.baseUrl.replaceFirst("http", "ws")}/ws/$conversationId'));
+
+    channel.stream.listen((data) {
+      setState(() {
+        messages.add(json.decode(data));
+      });
+    });
   }
 
   Future<void> sendMessage() async {
@@ -104,13 +118,22 @@ class _ChatScreenState extends State<ChatScreen> {
     );
 
     if (response.statusCode == 200) {
-      setState(() {
-        messages.add(json.decode(response.body));
-      });
+      channel.sink.add(jsonEncode({
+        'conversation_id': conversationId,
+        'sender_id': userId,
+        'message': messageController.text,
+      }));
       messageController.clear();
     } else {
       throw Exception('Failed to send message');
     }
+  }
+
+  @override
+  void dispose() {
+    channel.sink.close(status.goingAway);
+    messageController.dispose();
+    super.dispose();
   }
 
   @override
