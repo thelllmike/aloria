@@ -7,8 +7,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:aloria/screens/firstscreen.dart';
 import 'package:aloria/theme/app_colors.dart';
-import 'package:shared_preferences/shared_preferences.dart'; // Import shared_preferences
-
+import 'package:shared_preferences/shared_preferences.dart';
 
 class GoogleScreen extends StatelessWidget {
   const GoogleScreen({super.key});
@@ -59,7 +58,9 @@ class GoogleScreen extends StatelessWidget {
         if (response.statusCode == 200) {
           final responseBody = jsonDecode(response.body);
           if (responseBody['message'] == 'Email saved successfully' || responseBody['message'] == 'Email already registered') {
-            print('Email successfully saved, navigating to FirstScreen');
+            print('Email successfully saved, retrieving userId');
+            GlobalUser.userId = responseBody['user_id']; // Save user ID globally
+            print('User ID: ${GlobalUser.userId}');
             if (context.mounted) {
               _navigateToFirstScreen(context);
             }
@@ -92,7 +93,7 @@ class GoogleScreen extends StatelessWidget {
       PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => const FirstScreen(),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          const begin = Offset(1.0, 0.0);  // Change these values to adjust the transition
+          const begin = Offset(1.0, 0.0); // Change these values to adjust the transition
           const end = Offset.zero;
           const curve = Curves.easeInOut;
 

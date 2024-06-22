@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:aloria/models/Productmodel.dart';
 import 'package:aloria/screens/chat.dart';
 import 'package:aloria/screens/utils/api_service.dart';
 import 'package:aloria/screens/utils/global_user.dart';
@@ -11,40 +12,7 @@ import 'package:unicons/unicons.dart';
 import 'dart:convert';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 
-class Product {
-  final int id;
-  final String name;
-  final String description;
-  final double price;
-  final int stock;
-  final String category;
-  final String brand;
-  final String imageUrl;
 
-  Product({
-    required this.id,
-    required this.name,
-    required this.description,
-    required this.price,
-    required this.stock,
-    required this.category,
-    required this.brand,
-    required this.imageUrl,
-  });
-
-  factory Product.fromJson(Map<String, dynamic> json) {
-    return Product(
-      id: json['product_id'],
-      name: json['product_name'] ?? 'Unknown Product',
-      description: json['description'] ?? '',
-      price: json['price'] != null ? json['price'].toDouble() : 0.0,
-      stock: json['stock'] ?? 0,
-      category: json['category'] ?? 'Unknown',
-      brand: json['brand'] ?? 'Unknown',
-      imageUrl: json['images'] != null && json['images'].isNotEmpty ? json['images'][0]['image_url'] : '',
-    );
-  }
-}
 
 class ShopScreen extends StatefulWidget {
   const ShopScreen({super.key});
@@ -102,6 +70,27 @@ class _ShopScreenState extends State<ShopScreen> {
     } catch (e) {
       print('Error resizing image from $url: $e');
       return null;
+    }
+  }
+
+  Future<void> addToCart(int productId, int quantity) async {
+    try {
+      final response = await ApiService.addToCart(GlobalUser.userId!, productId, quantity);
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Added to cart')),
+        );
+      } else {
+        print('Failed to add to cart: ${response.body}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to add to cart: ${response.body}')),
+        );
+      }
+    } catch (e) {
+      print('Error adding to cart: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error adding to cart: $e')),
+      );
     }
   }
 
@@ -232,18 +221,14 @@ class _ShopScreenState extends State<ShopScreen> {
                       return _buildProductCard(
                         context,
                         MemoryImage(snapshot.data!),
-                        product.name,
-                        product.brand,
-                        product.price.toString(),
+                        product,
                       );
                     } else if (snapshot.hasError || snapshot.data == null) {
                       print('Error loading image: ${snapshot.error}');
                       return _buildProductCard(
                         context,
                         null,
-                        product.name,
-                        product.brand,
-                        product.price.toString(),
+                        product,
                       );
                     }
                   }
@@ -258,7 +243,7 @@ class _ShopScreenState extends State<ShopScreen> {
     );
   }
 
-  Widget _buildProductCard(BuildContext context, ImageProvider? imageProvider, String productName, String productBrand, String productPrice) {
+  Widget _buildProductCard(BuildContext context, ImageProvider? imageProvider, Product product) {
     return Card(
       margin: const EdgeInsets.fromLTRB(10.0, 10.0, 14.0, 0.0),
       shape: RoundedRectangleBorder(
@@ -318,7 +303,7 @@ class _ShopScreenState extends State<ShopScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  productName,
+                  product.name,
                   style: const TextStyle(
                     fontFamily: 'Bebas Neue',
                     fontSize: 10.0,
@@ -330,7 +315,7 @@ class _ShopScreenState extends State<ShopScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      productBrand,
+                      product.brand,
                       style: const TextStyle(
                         fontFamily: 'Bebas Neue',
                         fontSize: 12.0,
@@ -338,7 +323,7 @@ class _ShopScreenState extends State<ShopScreen> {
                       ),
                     ),
                     Text(
-                      productPrice,
+                      product.price.toString(),
                       style: const TextStyle(
                         fontFamily: 'Bebas Neue',
                         fontSize: 12.0,
@@ -350,7 +335,9 @@ class _ShopScreenState extends State<ShopScreen> {
                 ),
                 Center(
                   child: ElevatedButton.icon(
-                    onPressed: () {},
+                    onPressed: () {
+                      addToCart(product.id, 1); // Add product to cart with quantity 1
+                    },
                     icon: Transform.scale(
                       scale: 0.6,
                       child: const Icon(
