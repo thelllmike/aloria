@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:aloria/models/Productmodel.dart';
+import 'package:aloria/screens/address.dart';
 import 'package:aloria/screens/chat.dart';
 import 'package:aloria/screens/utils/api_service.dart'; // Import the ApiService
 import 'package:aloria/screens/utils/global_user.dart';
@@ -371,6 +372,7 @@ class _CartScreenState extends State<CartScreen> {
         ),
         onPressed: () {
           // Proceed to checkout
+          Navigator.of(context).push(_createRoute());
         },
         child: const Padding(
           padding: EdgeInsets.all(12.0),
@@ -384,6 +386,24 @@ class _CartScreenState extends State<CartScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Route _createRoute() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => const AddressScreen(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(1.0, 0.0);
+        const end = Offset.zero;
+        const curve = Curves.ease;
+
+        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
     );
   }
 }
