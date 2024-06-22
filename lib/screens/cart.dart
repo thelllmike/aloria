@@ -77,38 +77,29 @@ class _CartScreenState extends State<CartScreen> {
       key: _scaffoldKey,
       drawer: const CustomDrawer(), // Adding the drawer here
       body: SafeArea(
-        child: CustomScrollView(
-          slivers: <Widget>[
-            _buildSliverAppBar(context, firstName),
-            SliverToBoxAdapter(
-              child: Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.all(16.0),
-                child: const Text(
-                  'CART',
-                  style: TextStyle(
-                    fontFamily: 'Bebas Neue',
-                    fontSize: 22.0,
-                    fontWeight: FontWeight.bold,
-                  ),
+        child: Column(
+          children: <Widget>[
+            _buildAppBar(context, firstName),
+            Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(16.0),
+              child: const Text(
+                'CART',
+                style: TextStyle(
+                  fontFamily: 'Bebas Neue',
+                  fontSize: 22.0,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            isLoading
-                ? SliverToBoxAdapter(
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  )
-                : cartProducts.isEmpty
-                    ? SliverToBoxAdapter(
-                        child: Center(
-                          child: Text('Your cart is empty'),
-                        ),
-                      )
-                    : SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          (context, index) {
+            Expanded(
+              child: isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : cartProducts.isEmpty
+                      ? Center(child: Text('Your cart is empty'))
+                      : ListView.builder(
+                          itemCount: cartProducts.length,
+                          itemBuilder: (context, index) {
                             final cartItem = cartProducts[index];
                             final product = productsMap[cartItem.productId];
                             return Padding(
@@ -243,68 +234,65 @@ class _CartScreenState extends State<CartScreen> {
                               ),
                             );
                           },
-                          childCount: cartProducts.length,
                         ),
-                      ),
-            SliverToBoxAdapter(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Column(
-                  children: [
-                    Container(
-                      height: 48,
-                      margin: const EdgeInsets.only(top: 20), // Gives space between cart items and promo code
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF403D3D26), // Dark grey text box color
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              decoration: InputDecoration(
-                                hintText: 'Promo Code',
-                                hintStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
-                                border: InputBorder.none,
-                              ),
-                              style: const TextStyle(color: Colors.white),
-                            ),
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              // Logic to apply promo code
-                            },
-                            style: ElevatedButton.styleFrom(
-                              primary: const Color(0xFF77BF43), // Green button
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                              minimumSize: const Size(0, 30), // Remove minimum constraints
-                            ),
-                            child: const Text(
-                              'Apply',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                children: [
+                  Container(
+                    height: 48,
+                    margin: const EdgeInsets.only(top: 20), // Gives space between cart items and promo code
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF403D3D26), // Dark grey text box color
+                      borderRadius: BorderRadius.circular(16),
                     ),
-                    const Divider(),
-                    _buildPriceRow('Total', total),
-                    const Divider(),
-                    _buildPriceRow('Shipping', shippingFee),
-                    const Divider(),
-                    _buildPriceRow('Sub Total', total + shippingFee),
-                    const SizedBox(height: 20),
-                    _buildCheckoutButton(),
-                    const SizedBox(height: 20),
-                  ],
-                ),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            decoration: InputDecoration(
+                              hintText: 'Promo Code',
+                              hintStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
+                              border: InputBorder.none,
+                            ),
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            // Logic to apply promo code
+                          },
+                          style: ElevatedButton.styleFrom(
+                            primary: const Color(0xFF77BF43), // Green button
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            minimumSize: const Size(0, 30), // Remove minimum constraints
+                          ),
+                          child: const Text(
+                            'Apply',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Divider(),
+                  _buildPriceRow('Total', total),
+                  const Divider(),
+                  _buildPriceRow('Shipping', shippingFee),
+                  const Divider(),
+                  _buildPriceRow('Sub Total', total + shippingFee),
+                  const SizedBox(height: 20),
+                  _buildCheckoutButton(),
+                  const SizedBox(height: 20),
+                ],
               ),
             ),
           ],
@@ -321,10 +309,9 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  SliverAppBar _buildSliverAppBar(BuildContext context, String firstName) {
-    return SliverAppBar(
+  Widget _buildAppBar(BuildContext context, String firstName) {
+    return AppBar(
       backgroundColor: Colors.white,
-      pinned: true,
       leading: IconButton(
         icon: const Icon(UniconsLine.paragraph, color: Colors.black),
         onPressed: () => _scaffoldKey.currentState?.openDrawer(), // This opens the drawer
