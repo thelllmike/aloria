@@ -4,6 +4,7 @@ import 'package:unicons/unicons.dart';
 import 'package:aloria/theme/app_colors.dart'; // Ensure this file has the required color definitions.
 import 'package:aloria/widgets/bottom_nav.dart';
 import 'package:aloria/widgets/menu.dart'; // Assuming you have the custom drawer widget.
+import 'package:aloria/screens/utils/global_user.dart'; // Ensure you have the global user for first name.
 
 class SavedScreen extends StatefulWidget {
   const SavedScreen({super.key});
@@ -52,13 +53,18 @@ class _SavedScreenState extends State<SavedScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Extract the first name from GlobalUser.name
+    String firstName = (GlobalUser.name != null && GlobalUser.name!.isNotEmpty)
+        ? GlobalUser.name!.split(' ')[0]
+        : "Anna";
+
     return Scaffold(
       key: _scaffoldKey,
       drawer: const CustomDrawer(), // Adding the drawer here
       body: SafeArea(
         child: CustomScrollView(
           slivers: <Widget>[
-            _buildSliverAppBar(context),
+            _buildSliverAppBar(context, firstName),
             SliverToBoxAdapter(
               child: Column(
                 children: [
@@ -81,7 +87,7 @@ class _SavedScreenState extends State<SavedScreen> {
     );
   }
 
-  SliverAppBar _buildSliverAppBar(BuildContext context) {
+  SliverAppBar _buildSliverAppBar(BuildContext context, String firstName) {
     return SliverAppBar(
       backgroundColor: Colors.white,  // White background color
       pinned: true,  // AppBar stays visible at the top when scrolling
@@ -89,9 +95,9 @@ class _SavedScreenState extends State<SavedScreen> {
         icon: const Icon(UniconsLine.paragraph, color: Colors.black),
         onPressed: () => _scaffoldKey.currentState?.openDrawer(),  // This opens the drawer
       ),
-      title: const Text(
-        'Hi, Anna',
-        style: TextStyle(
+      title: Text(
+        'Hi, $firstName',
+        style: const TextStyle(
           fontFamily: 'Nunito',
           color: Colors.black,
           fontSize: 14.0,
@@ -100,7 +106,7 @@ class _SavedScreenState extends State<SavedScreen> {
       actions: [
         IconButton(
           icon: const Icon(UniconsLine.comments, color: Colors.black),
-         onPressed: () {
+          onPressed: () {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => const ChatScreen()), // Navigate to ChatScreen
@@ -158,7 +164,7 @@ class _SavedScreenState extends State<SavedScreen> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 16.0),
+          const SizedBox(height: 16.0),
           ListView.separated(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
@@ -169,9 +175,9 @@ class _SavedScreenState extends State<SavedScreen> {
                   color: AppColors.itemColor,
                   borderRadius: BorderRadius.circular(45.0),
                 ),
-                margin: EdgeInsets.symmetric(horizontal: 36.0, vertical: 4.0),
+                margin: const EdgeInsets.symmetric(horizontal: 36.0, vertical: 4.0),
                 child: ListTile(
-                  contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),  // Reduced horizontal padding
+                  contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),  // Reduced horizontal padding
                   leading: const CircleAvatar(
                     radius: 44,
                     backgroundImage: AssetImage('assets/images/pro.png'),
@@ -193,11 +199,11 @@ class _SavedScreenState extends State<SavedScreen> {
                       color: Colors.white.withOpacity(0.7),
                     ),
                   ),
-                  trailing: Icon(UniconsLine.angle_right_b, color: Colors.white, size: 52.0,),
+                  trailing: const Icon(UniconsLine.angle_right_b, color: Colors.white, size: 52.0,),
                 ),
               );
             },
-            separatorBuilder: (BuildContext context, int index) => SizedBox(height: 10),
+            separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 10),
           ),
           const Padding(
             padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
@@ -297,7 +303,7 @@ class _SavedScreenState extends State<SavedScreen> {
                     color: Colors.black,
                   ),
                 ),
-                SizedBox(height: 6),
+                const SizedBox(height: 6),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

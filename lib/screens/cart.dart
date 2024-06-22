@@ -4,6 +4,7 @@ import 'package:unicons/unicons.dart';
 import 'package:aloria/widgets/bottom_nav.dart'; // Assuming you have this custom widget.
 import 'package:aloria/theme/app_colors.dart'; // Assuming you have this custom widget.
 import 'package:aloria/widgets/menu.dart'; // Assuming you have the custom drawer widget.
+import 'package:aloria/screens/utils/global_user.dart'; // Assuming you have the global user for first name.
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
@@ -41,13 +42,18 @@ class _CartScreenState extends State<CartScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Extract the first name from GlobalUser.name
+    String firstName = (GlobalUser.name != null && GlobalUser.name!.isNotEmpty)
+        ? GlobalUser.name!.split(' ')[0]
+        : "Anna";
+
     return Scaffold(
       key: _scaffoldKey,
       drawer: const CustomDrawer(), // Adding the drawer here
       body: SafeArea(
         child: CustomScrollView(
           slivers: <Widget>[
-            _buildSliverAppBar(context),
+            _buildSliverAppBar(context, firstName),
             SliverToBoxAdapter(
               child: Container(
                 alignment: Alignment.center,
@@ -276,17 +282,17 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  SliverAppBar _buildSliverAppBar(BuildContext context) {
+  SliverAppBar _buildSliverAppBar(BuildContext context, String firstName) {
     return SliverAppBar(
       backgroundColor: Colors.white,
       pinned: true,
       leading: IconButton(
-        icon: Icon(UniconsLine.paragraph, color: Colors.black),
+        icon: const Icon(UniconsLine.paragraph, color: Colors.black),
         onPressed: () => _scaffoldKey.currentState?.openDrawer(),  // This opens the drawer
       ),
-      title: const Text(
-        'Hi, Anna',
-        style: TextStyle(
+      title: Text(
+        'Hi, $firstName',
+        style: const TextStyle(
           fontFamily: 'Nunito',
           color: Colors.black,
           fontSize: 14.0,

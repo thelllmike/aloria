@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:aloria/screens/chat.dart';
 import 'package:aloria/screens/utils/api_service.dart';
+import 'package:aloria/screens/utils/global_user.dart';
 import 'package:aloria/theme/app_colors.dart';
 import 'package:aloria/widgets/bottom_nav.dart';
 import 'package:aloria/widgets/menu.dart';
@@ -106,13 +107,18 @@ class _ShopScreenState extends State<ShopScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Extract the first name from GlobalUser.name
+    String firstName = (GlobalUser.name != null && GlobalUser.name!.isNotEmpty)
+        ? GlobalUser.name!.split(' ')[0]
+        : "Anna";
+
     return Scaffold(
       key: _scaffoldKey,
       drawer: const CustomDrawer(),
       body: SafeArea(
         child: CustomScrollView(
           slivers: <Widget>[
-            _buildSliverAppBar(context),
+            _buildSliverAppBar(context, firstName),
             SliverToBoxAdapter(
               child: Column(
                 children: [
@@ -135,7 +141,7 @@ class _ShopScreenState extends State<ShopScreen> {
     );
   }
 
-  SliverAppBar _buildSliverAppBar(BuildContext context) {
+  SliverAppBar _buildSliverAppBar(BuildContext context, String firstName) {
     return SliverAppBar(
       backgroundColor: Colors.white,
       pinned: true,
@@ -143,9 +149,9 @@ class _ShopScreenState extends State<ShopScreen> {
         icon: const Icon(UniconsLine.paragraph, color: Colors.black),
         onPressed: () => _scaffoldKey.currentState?.openDrawer(),
       ),
-      title: const Text(
-        'Hi, Anna',
-        style: TextStyle(
+      title: Text(
+        'Hi, $firstName',
+        style: const TextStyle(
           fontFamily: 'Nunito',
           color: Colors.black,
           fontSize: 14.0,
@@ -241,7 +247,7 @@ class _ShopScreenState extends State<ShopScreen> {
                       );
                     }
                   }
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 },
               );
             },
