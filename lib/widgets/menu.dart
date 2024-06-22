@@ -66,7 +66,7 @@ class CustomDrawer extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ChatScreen()),  // Navigate to ChatScreen
+                MaterialPageRoute(builder: (context) => const ChatScreen()),  // Navigate to ChatScreen
               );
             },
           ),

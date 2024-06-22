@@ -11,7 +11,6 @@ class FirstScreen extends StatefulWidget {
   const FirstScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _FirstScreenState createState() => _FirstScreenState();
 }
 
@@ -65,9 +64,9 @@ class _FirstScreenState extends State<FirstScreen> {
                       margin: const EdgeInsets.symmetric(horizontal: 36.0, vertical: 4.0),
                       child: ListTile(
                         contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
-                        leading: const CircleAvatar(
+                        leading: CircleAvatar(
                           radius: 44,
-                          backgroundImage: AssetImage('assets/images/pro.png'),
+                          backgroundImage: NetworkImage(GlobalUser.profilePictureUrl ?? 'assets/images/pro.png'),
                         ),
                         title: const Text(
                           'Oily skin',
@@ -88,9 +87,11 @@ class _FirstScreenState extends State<FirstScreen> {
                         ),
                         trailing: const Icon(UniconsLine.angle_right_b, color: Colors.white, size: 52.0,),
                         onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => TestResultsScreen(), // Make sure 'TestResultsScreen' is the correct name of your destination screen
-                          ));
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (context) => TestResultsScreen(),
+                            ),
+                          );
                         },
                       ),
                     );
