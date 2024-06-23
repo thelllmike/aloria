@@ -11,6 +11,7 @@ class FirstScreen extends StatefulWidget {
   const FirstScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _FirstScreenState createState() => _FirstScreenState();
 }
 
@@ -44,7 +45,7 @@ class _FirstScreenState extends State<FirstScreen> {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontFamily: 'Bebas Neue',
-                        fontSize: 25.0,
+                        fontSize: 18.0,
                         fontWeight: FontWeight.w700,
                         height: 1.0,
                       ),
@@ -72,7 +73,7 @@ class _FirstScreenState extends State<FirstScreen> {
                           'Oily skin',
                           style: TextStyle(
                             fontFamily: 'Nunito',
-                            fontSize: 25.0,
+                            fontSize: 18.0,
                             fontWeight: FontWeight.w700,
                             color: Colors.white,
                           ),
@@ -81,7 +82,7 @@ class _FirstScreenState extends State<FirstScreen> {
                           'Fair tone',
                           style: TextStyle(
                             fontFamily: 'Nunito',
-                            fontSize: 20.0,
+                            fontSize: 18.0,
                             color: Colors.white.withOpacity(0.7),
                           ),
                         ),
@@ -105,7 +106,7 @@ class _FirstScreenState extends State<FirstScreen> {
                       'SKIN TYPES',
                       style: TextStyle(
                         fontFamily: 'Bebas Neue',
-                        fontSize: 25.0,
+                        fontSize: 18.0,
                         fontWeight: FontWeight.w700,
                         height: 1.0,
                       ),
@@ -142,7 +143,7 @@ class _FirstScreenState extends State<FirstScreen> {
       backgroundColor: Colors.white,
       pinned: true,
       leading: IconButton(
-        icon: Icon(UniconsLine.paragraph, color: Colors.black),
+        icon: const Icon(UniconsLine.paragraph, color: Colors.black),
         onPressed: () => _scaffoldKey.currentState?.openDrawer(),  // This opens the drawer
       ),
       title: Text(
@@ -206,7 +207,7 @@ class _FirstScreenState extends State<FirstScreen> {
     return Column(
       children: [
         Image.asset(iconPath, width: 52, height: 52),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         Text(label, style: const TextStyle(fontFamily: 'Nunito', fontSize: 15.0)),
       ],
     );

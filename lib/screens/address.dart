@@ -1,9 +1,11 @@
 import 'dart:convert';
-import 'package:aloria/screens/AddAddressScreen.dart';
+import 'package:aloria/screens/paymentmethod.dart';
 import 'package:flutter/material.dart';
 import 'package:unicons/unicons.dart';
 import 'package:http/http.dart' as http;
 import 'package:aloria/screens/utils/global_user.dart';
+import 'package:aloria/screens/AddAddressScreen.dart'; // Import the AddAddressScreen
+
 
 class Address {
   final int userId;
@@ -104,6 +106,26 @@ class _AddressScreenState extends State<AddressScreen> {
     });
   }
 
+  void _navigateToPaymentMethodScreen() {
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => const PaymentMethodScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(1.0, 0.0);
+          const end = Offset.zero;
+          const curve = Curves.ease;
+
+          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+          return SlideTransition(
+            position: animation.drive(tween),
+            child: child,
+          );
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -199,9 +221,7 @@ class _AddressScreenState extends State<AddressScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
             child: ElevatedButton(
-              onPressed: () {
-                // Proceed to payment action
-              },
+              onPressed: _navigateToPaymentMethodScreen,
               style: ElevatedButton.styleFrom(
                 primary: const Color(0xFF77BF43),
                 shape: RoundedRectangleBorder(

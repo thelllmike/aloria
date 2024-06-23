@@ -379,9 +379,9 @@ class _CartScreenState extends State<CartScreen> {
           child: Text(
             'Proceed to Checkout',
             style: TextStyle(
-              fontFamily: 'Nunito',
-              fontSize: 20.0,
-              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF403D3D),
             ),
           ),
         ),

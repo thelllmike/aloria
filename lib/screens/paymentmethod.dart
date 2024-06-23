@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class PaymentMethodScreen extends StatefulWidget {
+  const PaymentMethodScreen({super.key});
   @override
+  // ignore: library_private_types_in_public_api
   _PaymentMethodScreenState createState() => _PaymentMethodScreenState();
 }
 
@@ -14,7 +16,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: const Padding(
@@ -30,13 +32,13 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 const Center(
                   child: Text(
                     'SELECT PAYMENT METHOD',
                     style: TextStyle(
                       fontFamily: 'Bebas Neue',
-                      fontSize: 22.0,
+                      fontSize: 18.0,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -45,15 +47,15 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                 paymentOption('Master Card', 'marster.svg', 'MasterCard'),
                 paymentOption('Visa Card', 'visa.svg', 'VisaCard'),
                 paymentOption('PayPal', 'paypal.svg', 'PayPal'),
-                Divider(),
+                const Divider(),
                 Padding(
-                  padding: EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(16.0),
                   child: Container(
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey),
                       borderRadius: BorderRadius.circular(5),
                     ),
-                    padding: EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -65,26 +67,26 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                             color: Colors.black54,
                           ),
                         ),
-                        SizedBox(height: 8),
+                        const SizedBox(height: 8),
                         cardDetailsRow(),
                       ],
                     ),
                   ),
                 ),
-                SizedBox(height: 40),
+                const SizedBox(height: 40),
                 const Center(
                   child: Text(
                     'SHIPPING INFORMATION',
                     style: TextStyle(
                       fontFamily: 'Bebas Neue',
-                      fontSize: 22.0,
+                      fontSize: 18.0,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-                Divider(),
+                const Divider(),
                 addressDetails(),
-                Divider(),
+                const Divider(),
               ],
             ),
           ),
@@ -93,8 +95,8 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Divider(),
-                Padding(
+                const Divider(),
+                const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -104,7 +106,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                     ],
                   ),
                 ),
-                Divider(),
+                const Divider(),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: SizedBox(
@@ -113,10 +115,21 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                     child: ElevatedButton(
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(
-                        primary: Color(0xFF77BF43),
-                        textStyle: TextStyle(fontSize: 18),
+                        primary: const Color(0xFF77BF43),
+                        textStyle: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF403D3D),
+                        ),
                       ),
-                      child: Text('Pay'),
+                      child: const Text(
+                        'Pay',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF403D3D),
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -138,7 +151,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
             fontSize: 16,
           ),
         ),
-        SizedBox(width: 10),
+        const SizedBox(width: 10),
         SvgPicture.asset('assets/icons/marster.svg', width: 24),
         const Expanded(
           child: Text(
@@ -155,7 +168,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
   }
 
   Widget addressDetails() {
-    return Padding(
+    return const Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -192,7 +205,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
             selectedMethod = methodValue;
           });
         },
-        activeColor: Color(0xFF77BF43),
+        activeColor: const Color(0xFF77BF43),
       ),
     );
   }
