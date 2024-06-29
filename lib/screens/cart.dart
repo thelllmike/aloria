@@ -10,6 +10,7 @@ import 'package:aloria/widgets/menu.dart'; // Assuming you have the custom drawe
 import 'package:flutter/material.dart';
 import 'package:unicons/unicons.dart';
 import 'package:aloria/models/Cartmodel.dart'; // Assuming you have this model for cart items.
+import 'package:http/http.dart' as http;
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
@@ -23,6 +24,7 @@ class _CartScreenState extends State<CartScreen> {
   List<CartItem> cartProducts = [];
   bool isLoading = true;
   Map<int, Product> productsMap = {};
+  Set<int> selectedCartIds = {}; // Store selected cart item IDs
 
   @override
   void initState() {
@@ -63,8 +65,34 @@ class _CartScreenState extends State<CartScreen> {
     }
   }
 
+  Future<void> deleteCartItem(int cartId, int index) async {
+    try {
+      final response = await http.delete(
+        Uri.parse('http://10.0.2.2:8001/cart/cart/item/$cartId'),
+      );
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        setState(() {
+          cartProducts.removeAt(index);
+          selectedCartIds.remove(cartId);
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Item deleted successfully')),
+        );
+      } else {
+        throw Exception('Failed to delete item');
+      }
+    } catch (e) {
+      print('Failed to delete item: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to delete item: $e')),
+      );
+    }
+  }
+
   int _selectedIndex = 0; // Default index if nothing is selected
-  double get total => cartProducts.fold(0, (sum, item) => sum + item.quantity * (productsMap[item.productId]?.price ?? 0.0));
+  double get total => cartProducts
+      .where((item) => selectedCartIds.contains(item.cartId))
+      .fold(0, (sum, item) => sum + item.quantity * (productsMap[item.productId]?.price ?? 0.0));
   final double shippingFee = 10.0;
 
   @override
@@ -95,9 +123,9 @@ class _CartScreenState extends State<CartScreen> {
             ),
             Expanded(
               child: isLoading
-                  ? Center(child: CircularProgressIndicator())
+                  ? const Center(child: CircularProgressIndicator())
                   : cartProducts.isEmpty
-                      ? Center(child: Text('Your cart is empty'))
+                      ? const Center(child: Text('Your cart is empty'))
                       : ListView.builder(
                           itemCount: cartProducts.length,
                           itemBuilder: (context, index) {
@@ -108,8 +136,16 @@ class _CartScreenState extends State<CartScreen> {
                               child: Row(
                                 children: [
                                   Checkbox(
-                                    value: true,
-                                    onChanged: (bool? value) {},
+                                    value: selectedCartIds.contains(cartItem.cartId),
+                                    onChanged: (bool? value) {
+                                      setState(() {
+                                        if (value == true) {
+                                          selectedCartIds.add(cartItem.cartId);
+                                        } else {
+                                          selectedCartIds.remove(cartItem.cartId);
+                                        }
+                                      });
+                                    },
                                     activeColor: const Color(0xFF77BF43),
                                   ),
                                   Expanded(
@@ -154,11 +190,7 @@ class _CartScreenState extends State<CartScreen> {
                                                         ),
                                                         IconButton(
                                                           icon: const Icon(UniconsLine.times),
-                                                          onPressed: () {
-                                                            setState(() {
-                                                              cartProducts.removeAt(index);
-                                                            });
-                                                          },
+                                                          onPressed: () => deleteCartItem(cartItem.cartId, index), // Use the correct field here
                                                         ),
                                                       ],
                                                     ),
@@ -371,6 +403,12 @@ class _CartScreenState extends State<CartScreen> {
           primary: const Color(0xFF77BF43), // Button color
         ),
         onPressed: () {
+          if (selectedCartIds.isEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Please select at least one item to proceed')),
+            );
+            return;
+          }
           // Proceed to checkout
           Navigator.of(context).push(_createRoute(total + shippingFee));
         },

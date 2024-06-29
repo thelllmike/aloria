@@ -1,6 +1,9 @@
+import 'dart:convert';
 import 'package:aloria/screens/address.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:http/http.dart' as http;
+import 'package:aloria/screens/utils/global_user.dart'; // Make sure to import GlobalUser to access user ID
 
 class PaymentMethodScreen extends StatefulWidget {
   final double total;
@@ -14,6 +17,42 @@ class PaymentMethodScreen extends StatefulWidget {
 
 class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
   String selectedMethod = 'PayPal';
+  bool isLoading = false;
+
+  Future<void> _submitOrder() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    final orderData = {
+      'user_id': GlobalUser.userId,
+      'total_amount': widget.total,
+      'address_id': widget.selectedAddress.addressId,
+    };
+
+    final response = await http.post(
+      Uri.parse('http://10.0.2.2:8001/orders/orders/'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(orderData),
+    );
+
+    setState(() {
+      isLoading = false;
+    });
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Order placed successfully')),
+      );
+      // Optionally navigate to a different screen or clear the cart
+    } else {
+      // Show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to place order: ${response.body}')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -117,9 +156,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                     width: double.infinity,
                     height: 50,
                     child: ElevatedButton(
-                      onPressed: () {
-                        // Handle the payment process
-                      },
+                      onPressed: isLoading ? null : _submitOrder,
                       style: ElevatedButton.styleFrom(
                         primary: const Color(0xFF77BF43),
                         textStyle: const TextStyle(
@@ -128,14 +165,18 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                           color: Color(0xFF403D3D),
                         ),
                       ),
-                      child: const Text(
-                        'Pay',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF403D3D),
-                        ),
-                      ),
+                      child: isLoading
+                          ? const CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            )
+                          : const Text(
+                              'Pay',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF403D3D),
+                              ),
+                            ),
                     ),
                   ),
                 ),

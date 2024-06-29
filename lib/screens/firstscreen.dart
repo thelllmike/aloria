@@ -1,4 +1,8 @@
 import 'package:aloria/screens/chat.dart';
+import 'package:aloria/screens/skintype/CombinationSkin.dart';
+import 'package:aloria/screens/skintype/NormalSkin.dart';
+import 'package:aloria/screens/skintype/OilySkin.dart';
+import 'package:aloria/screens/skintype/dry.dart';
 import 'package:aloria/screens/testresult.dart';
 import 'package:aloria/screens/utils/global_user.dart';
 import 'package:aloria/theme/app_colors.dart';
@@ -11,7 +15,6 @@ class FirstScreen extends StatefulWidget {
   const FirstScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _FirstScreenState createState() => _FirstScreenState();
 }
 
@@ -116,10 +119,18 @@ class _FirstScreenState extends State<FirstScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _buildSkinTypeIcon(context, 'Dry skin', 'assets/images/dry_skin.png'),
-                    _buildSkinTypeIcon(context, 'Oily skin', 'assets/images/oily_skin.png'),
-                    _buildSkinTypeIcon(context, 'Comb. skin', 'assets/images/combination_skin.png'),
-                    _buildSkinTypeIcon(context, 'Normal skin', 'assets/images/normal_skin.png'),
+                    _buildSkinTypeIcon(context, 'Dry skin', 'assets/images/dry_skin.png', () {
+                      _navigateToScreen(context, const DrySkinScreen());
+                    }),
+                    _buildSkinTypeIcon(context, 'Oily skin', 'assets/images/oily_skin.png', () {
+                      _navigateToScreen(context, const OilySkinScreen());
+                    }),
+                    _buildSkinTypeIcon(context, 'Comb. skin', 'assets/images/combination_skin.png', () {
+                      _navigateToScreen(context, const CombinationSkinScreen());
+                    }),
+                    _buildSkinTypeIcon(context, 'Normal skin', 'assets/images/normal_skin.png', () {
+                      _navigateToScreen(context, const NormalSkinScreen());
+                    }),
                   ],
                 ),
               ],
@@ -203,13 +214,36 @@ class _FirstScreenState extends State<FirstScreen> {
     );
   }
 
-  Widget _buildSkinTypeIcon(BuildContext context, String label, String iconPath) {
-    return Column(
-      children: [
-        Image.asset(iconPath, width: 52, height: 52),
-        const SizedBox(height: 8),
-        Text(label, style: const TextStyle(fontFamily: 'Nunito', fontSize: 15.0)),
-      ],
+  Widget _buildSkinTypeIcon(BuildContext context, String label, String iconPath, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Image.asset(iconPath, width: 52, height: 52),
+          const SizedBox(height: 8),
+          Text(label, style: const TextStyle(fontFamily: 'Nunito', fontSize: 15.0)),
+        ],
+      ),
+    );
+  }
+
+  void _navigateToScreen(BuildContext context, Widget screen) {
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => screen,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(1.0, 0.0);
+          const end = Offset.zero;
+          const curve = Curves.easeInOut;
+
+          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+          return SlideTransition(
+            position: animation.drive(tween),
+            child: child,
+          );
+        },
+      ),
     );
   }
 }
