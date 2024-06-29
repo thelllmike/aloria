@@ -1,11 +1,15 @@
 import 'package:aloria/screens/cart.dart';
 import 'package:aloria/screens/firstscreen.dart';
 import 'package:aloria/screens/savedscan.dart';
+import 'package:aloria/screens/camera_screen.dart';
 import 'package:aloria/screens/shop.dart';
 import 'package:aloria/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:unicons/unicons.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
+
 
 class CustomBottomNavigationBar extends StatelessWidget {
   final int selectedIndex;
@@ -69,7 +73,9 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
     return InkWell(
       onTap: () {
-        if (navigateTo != null) {
+        if (isCameraIcon) {
+          _requestPermissionAndOpenCamera(context);
+        } else if (navigateTo != null) {
           _navigateTo(context, navigateTo);
         } else {
           onItemSelected(index);
@@ -122,6 +128,21 @@ class CustomBottomNavigationBar extends StatelessWidget {
         return CartScreen();
       default:
         return FirstScreen();  // Default to FirstScreen if route is not found
+    }
+  }
+
+  Future<void> _requestPermissionAndOpenCamera(BuildContext context) async {
+    PermissionStatus cameraPermission = await Permission.camera.request();
+    if (cameraPermission.isGranted) {
+     
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const CameraScreen()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Camera permission is required to take pictures')),
+      );
     }
   }
 }
