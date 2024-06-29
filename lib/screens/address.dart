@@ -6,7 +6,6 @@ import 'package:http/http.dart' as http;
 import 'package:aloria/screens/utils/global_user.dart';
 import 'package:aloria/screens/AddAddressScreen.dart'; // Import the AddAddressScreen
 
-
 class Address {
   final int userId;
   final String addressLine1;
@@ -46,7 +45,9 @@ class Address {
 }
 
 class AddressScreen extends StatefulWidget {
-  const AddressScreen({super.key});
+  final double total;
+
+  const AddressScreen({super.key, required this.total});
 
   @override
   _AddressScreenState createState() => _AddressScreenState();
@@ -55,7 +56,7 @@ class AddressScreen extends StatefulWidget {
 class _AddressScreenState extends State<AddressScreen> {
   List<Address> addresses = [];
   bool isLoading = true;
-  double total = 70;
+  int? selectedAddressId;
 
   @override
   void initState() {
@@ -107,9 +108,19 @@ class _AddressScreenState extends State<AddressScreen> {
   }
 
   void _navigateToPaymentMethodScreen() {
+    if (selectedAddressId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select a delivery address')),
+      );
+      return;
+    }
+
     Navigator.of(context).push(
       PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => const PaymentMethodScreen(),
+        pageBuilder: (context, animation, secondaryAnimation) => PaymentMethodScreen(
+          total: widget.total,
+          selectedAddress: addresses.firstWhere((address) => address.addressId == selectedAddressId),
+        ),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           const begin = Offset(1.0, 0.0);
           const end = Offset.zero;
@@ -184,15 +195,10 @@ class _AddressScreenState extends State<AddressScreen> {
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                         child: ListTile(
                           leading: Checkbox(
-                            value: address.addressId == addresses.first.addressId,
+                            value: selectedAddressId == address.addressId,
                             onChanged: (bool? newValue) {
                               setState(() {
-                                // Set all addresses to not default
-                                addresses.forEach((address) {
-                                  address.addressId == address.addressId;
-                                });
-                                // Set the selected one as default
-                                addresses[index].addressId;
+                                selectedAddressId = newValue == true ? address.addressId : null;
                               });
                             },
                             activeColor: const Color(0xFF77BF43),
@@ -210,7 +216,9 @@ class _AddressScreenState extends State<AddressScreen> {
                             },
                           ),
                           onTap: () {
-                            // Optionally set this address as the default one
+                            setState(() {
+                              selectedAddressId = address.addressId;
+                            });
                           },
                           contentPadding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
                         ),
@@ -231,7 +239,7 @@ class _AddressScreenState extends State<AddressScreen> {
                 minimumSize: const Size(double.infinity, 50),
               ),
               child: Text(
-                'Proceed to Payment | \$${total}',
+                'Proceed to Payment | \$${widget.total}',
                 style: const TextStyle(
                   fontFamily: 'Nunito',
                   fontSize: 16,

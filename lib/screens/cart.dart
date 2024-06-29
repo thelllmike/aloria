@@ -372,7 +372,7 @@ class _CartScreenState extends State<CartScreen> {
         ),
         onPressed: () {
           // Proceed to checkout
-          Navigator.of(context).push(_createRoute());
+          Navigator.of(context).push(_createRoute(total + shippingFee));
         },
         child: const Padding(
           padding: EdgeInsets.all(12.0),
@@ -389,9 +389,9 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  Route _createRoute() {
+  Route _createRoute(double totalAmount) {
     return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => const AddressScreen(),
+      pageBuilder: (context, animation, secondaryAnimation) => AddressScreen(total: totalAmount),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         const begin = Offset(1.0, 0.0);
         const end = Offset.zero;

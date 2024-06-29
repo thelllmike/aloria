@@ -1,10 +1,14 @@
+import 'package:aloria/screens/address.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class PaymentMethodScreen extends StatefulWidget {
-  const PaymentMethodScreen({super.key});
+  final double total;
+  final Address selectedAddress;
+
+  const PaymentMethodScreen({super.key, required this.total, required this.selectedAddress});
+
   @override
-  // ignore: library_private_types_in_public_api
   _PaymentMethodScreenState createState() => _PaymentMethodScreenState();
 }
 
@@ -85,7 +89,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                   ),
                 ),
                 const Divider(),
-                addressDetails(),
+                addressDetails(widget.selectedAddress),
                 const Divider(),
               ],
             ),
@@ -96,13 +100,13 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const Divider(),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Total', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                      Text('\$70.00', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      const Text('Total', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      Text('\$${widget.total.toStringAsFixed(2)}', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                     ],
                   ),
                 ),
@@ -113,7 +117,9 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                     width: double.infinity,
                     height: 50,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        // Handle the payment process
+                      },
                       style: ElevatedButton.styleFrom(
                         primary: const Color(0xFF77BF43),
                         textStyle: const TextStyle(
@@ -167,27 +173,23 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
     );
   }
 
-  Widget addressDetails() {
-    return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.0),
+  Widget addressDetails(Address address) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Anna Holt',
-            style: TextStyle(color: Colors.black54, fontSize: 18),
+            address.addressLine1,
+            style: const TextStyle(color: Colors.black54, fontSize: 18),
           ),
           Text(
-            '1234 Main Street',
-            style: TextStyle(color: Colors.black54, fontSize: 18),
+            address.addressLine2,
+            style: const TextStyle(color: Colors.black54, fontSize: 18),
           ),
           Text(
-            'Anytown, USA',
-            style: TextStyle(color: Colors.black54, fontSize: 18),
-          ),
-          Text(
-            '+94 12345678',
-            style: TextStyle(color: Colors.black54, fontSize: 18),
+            '${address.city}, ${address.state}, ${address.postalCode}, ${address.country}',
+            style: const TextStyle(color: Colors.black54, fontSize: 18),
           ),
         ],
       ),
@@ -198,11 +200,12 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
     return ListTile(
       leading: SvgPicture.asset('assets/icons/$iconPath'),
       title: Text(title),
-      trailing: Switch(
-        value: selectedMethod == methodValue,
-        onChanged: (bool value) {
+      trailing: Radio<String>(
+        value: methodValue,
+        groupValue: selectedMethod,
+        onChanged: (String? value) {
           setState(() {
-            selectedMethod = methodValue;
+            selectedMethod = value!;
           });
         },
         activeColor: const Color(0xFF77BF43),
